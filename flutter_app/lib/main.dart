@@ -1,11 +1,38 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(new MyApp());
+
+class A {
+  a() => print("DJJTEST 1");
+}
+
+class B {
+  a() => print("DJJTEST 2");
+
+  b() => print("DJJTEST 2");
+}
+
+class C = A with B;
+
+class D = B with A;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    C c = new C();
+    bool isC = c is B;
+    print("DJJTEST" + isC.toString());
+    c.a();
+    c.b();
+    c..a()..b();
+    c?.a();
+    D d;
+    d ??= new D();
+    d.a();
+
+    B b=new B();
+    b..a()..b();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
