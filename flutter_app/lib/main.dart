@@ -1,7 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
-import 'Constant.dart';
+import 'constant.dart';
 
 void collectLog(String line) {
   print("DJJTEST error" + line);
@@ -158,6 +158,14 @@ class _MyHomePageState extends State<MyHomePage> {
 //                        },
 //                        fullscreenDialog: false,
 //                        maintainState: false));
+              },
+            ),
+            FlatButton(
+              child: Text("buttons"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(Router.R_Buttons, arguments: "buttons");
               },
             ),
           ],
