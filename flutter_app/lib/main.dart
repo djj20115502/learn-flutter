@@ -1,27 +1,26 @@
-import 'dart:async';
-
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
+import 'Constant.dart';
+
 void collectLog(String line) {
-  print("DJJTEST error"+line);
+  print("DJJTEST error" + line);
   //收集日志
 }
 
 void reportErrorAndLog(FlutterErrorDetails details) {
-  print( "DJJTEST reportErrorAndLog" );
+  print("DJJTEST reportErrorAndLog");
   //上报错误和日志逻辑
 }
 
 FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
-  print("DJJTEST makeDetails "  );
+  print("DJJTEST makeDetails ");
 
   // 构建错误信息
 }
 
 void main() {
   runApp(MyApp());
-
 }
 
 class A {
@@ -40,6 +39,8 @@ class D = B with A;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  StatelessElement a;
+
   @override
   Widget build(BuildContext context) {
     C c = new C();
@@ -74,9 +75,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Just test'),
-      routes: {
-        "new_page": (context) => NewRoute(),
-      },
+      routes: Router.routes,
     );
   }
 }
@@ -147,10 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("open new route"),
               textColor: Colors.blue,
               onPressed: () {
-                throw "djjerror";
- //                Navigator.pushNamed(context, "new_page");
+                //                Navigator.pushNamed(context, "new_page");
                 Navigator.of(context)
-                    .pushNamed("new_page", arguments: "h22222i");
+                    .pushNamed(Router.R_NewRoute, arguments: "h22222i");
 //                //导航到新路由
 //                Navigator.push(
 //                    context,
@@ -166,9 +164,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => setState(() => _counter++),
+        onPressed: () {
+          setState(() {
+            _counter++;
+          });
+        },
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.adb),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
