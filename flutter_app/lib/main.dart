@@ -168,14 +168,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     .pushNamed(Router.R_Buttons, arguments: "buttons");
               },
             ),
+            FlatButton(
+              child: Text("FlexLayoutTestRoute"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.of(context).pushNamed(Router.R_FlexLayoutTestRoute);
+              },
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            _counter++;
-          });
+          _counter++;
+          (context as Element).markNeedsBuild();
         },
         tooltip: 'Increment',
         child: Icon(Icons.adb),

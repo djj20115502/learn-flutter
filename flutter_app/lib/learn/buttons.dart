@@ -10,6 +10,7 @@ class Buttons extends StatelessWidget {
         title: Text(args),
       ),
       body: Center(
+
         child: Column(
             // Column is also layout widget. It takes a list of children and
             // arranges them vertically. By default, it sizes itself to fit its
