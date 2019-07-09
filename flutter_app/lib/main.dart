@@ -1,6 +1,28 @@
+import 'dart:async';
+
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(new MyApp());
+void collectLog(String line) {
+  print("DJJTEST error"+line);
+  //收集日志
+}
+
+void reportErrorAndLog(FlutterErrorDetails details) {
+  print( "DJJTEST reportErrorAndLog" );
+  //上报错误和日志逻辑
+}
+
+FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
+  print("DJJTEST makeDetails "  );
+
+  // 构建错误信息
+}
+
+void main() {
+  runApp(MyApp());
+
+}
 
 class A {
   a() => print("DJJTEST 1");
@@ -25,14 +47,18 @@ class MyApp extends StatelessWidget {
     print("DJJTEST" + isC.toString());
     c.a();
     c.b();
-    c..a()..b();
+    c
+      ..a()
+      ..b();
     c?.a();
     D d;
     d ??= new D();
     d.a();
 
-    B b=new B();
-    b..a()..b();
+    B b = new B();
+    b
+      ..a()
+      ..b();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -47,7 +73,10 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Just test'),
+      routes: {
+        "new_page": (context) => NewRoute(),
+      },
     );
   }
 }
@@ -72,17 +101,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,20 +137,88 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'You ha d the button this many times:',
             ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            FlatButton(
+              child: Text("open new route"),
+              textColor: Colors.blue,
+              onPressed: () {
+                throw "djjerror";
+ //                Navigator.pushNamed(context, "new_page");
+                Navigator.of(context)
+                    .pushNamed("new_page", arguments: "h22222i");
+//                //导航到新路由
+//                Navigator.push(
+//                    context,
+//                    new MaterialPageRoute(
+//                        builder: (context) {
+//                          return new NewRoute();
+//                        },
+//                        fullscreenDialog: false,
+//                        maintainState: false));
+              },
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => setState(() => _counter++),
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class NewRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var args = ModalRoute.of(context).settings.arguments;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(args),
+      ),
+      body: Center(
+        child: Column(
+          // Column is also layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Invoke "debug painting" (press "p" in the console, choose the
+          // "Toggle Debug Paint" action from the Flutter Inspector in Android
+          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // to see the wireframe for each widget.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              new WordPair.random().toString(),
+            ),
+            RandomWordsWidget(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RandomWordsWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // 生成随机字符串
+    final wordPair = new WordPair.random();
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Text(wordPair.toString()),
     );
   }
 }
