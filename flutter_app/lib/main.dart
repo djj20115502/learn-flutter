@@ -175,6 +175,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.of(context).pushNamed(Router.R_FlexLayoutTestRoute);
               },
             ),
+            FlatButton(
+              child: Text("R_ListLayoutTestRoute"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.of(context).pushNamed(Router.R_ListLayoutTestRoute);
+              },
+            ),
+            FlatButton(
+              child: Text("R_GridRoute"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.of(context).pushNamed(Router.R_GridRoute);
+              },
+            ),
           ],
         ),
       ),
