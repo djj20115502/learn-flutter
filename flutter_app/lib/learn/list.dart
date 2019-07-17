@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/learn/buttons.dart';
 
 import '../constant.dart';
 
@@ -29,7 +28,7 @@ class ListLayoutTestRoute extends StatelessWidget {
       result = await Navigator.push(
           //等待
           context,
-          MaterialPageRoute(builder: (context) => Detail(title: data)));
+          MaterialPageRoute(builder: (context) => Detail(title0: data)));
     } else {
       var t2 = await Navigator.of(context)
           .pushNamed(Router.R_ListDetail, arguments: data);
@@ -42,16 +41,18 @@ class ListLayoutTestRoute extends StatelessWidget {
 }
 
 class Detail extends StatelessWidget {
-  String title = "NULL";
-
-  Detail({Key key, this.title}) : super(key: key);
+  final StringBuffer title = StringBuffer();
+  Detail({Key key, String title0}) : super(key: key) {
+    title.write(title0);
+  }
 
   @override
   Widget build(BuildContext context) {
     var a = ModalRoute.of(context).settings.arguments;
     CommonUtils.log("title :" + a.toString());
+
     if (a != null) {
-      title = a.toString();
+      title.write(a.toString());
     }
 
     return Scaffold(

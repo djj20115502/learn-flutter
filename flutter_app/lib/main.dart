@@ -1,5 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/step2/navgater.dart';
 
 import 'constant.dart';
 
@@ -187,6 +188,17 @@ class _MyHomePageState extends State<MyHomePage> {
               textColor: Colors.blue,
               onPressed: () {
                 Navigator.of(context).pushNamed(Router.R_GridRoute);
+              },
+            ),
+            FlatButton(
+              child: Text("navgater"),
+              textColor: Colors.blue,
+              onPressed: () {
+                Navigator.push(context, new MaterialPageRoute(
+                  builder: (context) {
+                    return BottomNavgater();
+                  },
+                ));
               },
             ),
           ],
