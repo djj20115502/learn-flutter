@@ -1,5 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/navgater.dart';
 
 import 'constant.dart';
@@ -73,7 +74,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: MyHomePage(title: 'Just test'),
       routes: Router.routes,
@@ -151,14 +152,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.of(context)
                     .pushNamed(Router.R_NewRoute, arguments: "h22222i");
 //                //导航到新路由
-//                Navigator.push(
-//                    context,
-//                    new MaterialPageRoute(
-//                        builder: (context) {
-//                          return new NewRoute();
-//                        },
-//                        fullscreenDialog: false,
-//                        maintainState: false));
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) {
+                          return new NewRoute();
+                        },
+                        fullscreenDialog: false,
+                        maintainState: false));
               },
             ),
             FlatButton(
@@ -194,11 +195,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("navgater"),
               textColor: Colors.blue,
               onPressed: () {
-                Navigator.push(context, new MaterialPageRoute(
-                  builder: (context) {
-                    return BottomNavgater();
-                  },
-                ));
+                Test.testCount++;
+                Navigator.push(context, new CustomRoute(BottomNavgater()));
               },
             ),
           ],

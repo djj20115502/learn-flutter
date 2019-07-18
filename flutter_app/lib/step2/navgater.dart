@@ -72,7 +72,21 @@ class Detail extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Text(title),
+      body:Flex(
+            direction: Axis.vertical,
+            children: <Widget>[
+              Expanded(
+                flex: 10,
+                child: Container(
+                  width: 100,
+                  child: Text(title,textAlign: TextAlign.center),
+                  height: 30.0,
+                  color: Colors.red,
+                ),
+              ),
+              
+            ],
+          ),
     );
   }
 }
