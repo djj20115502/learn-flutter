@@ -14,7 +14,6 @@ class CustomRoute extends PageRouteBuilder {
                 Animation<double> animation1,
                 Animation<double> animation2,
                 Widget child) {
-            
               switch (Test.testCount % 5) {
                 case 1:
                   //缩放路由动画
