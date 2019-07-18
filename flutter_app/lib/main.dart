@@ -2,6 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/navgater.dart';
+import 'package:flutter_app/step2/keeplive.dart' as keeplive;
 
 import 'constant.dart';
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.lightBlue,
       ),
       home: MyHomePage(title: 'Just test'),
       routes: Router.routes,
@@ -52,8 +53,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   @override
   Widget build(BuildContext context) {
     List<ItemBean> shows = [
@@ -77,10 +76,15 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "GridRoute",
           onPress: () => Navigator.of(context).pushNamed(Router.R_GridRoute)),
       ItemBean(
-          title: "导航到新路由",
+          title: "不同的路由动画",
           onPress: () {
             Test.testCount++;
             Navigator.push(context, new CustomRoute(BottomNavgater()));
+          }),
+      ItemBean(
+          title: "live",
+          onPress: () {
+            Navigator.push(context, CustomRoute(keeplive.KeepAliveDemo()));
           }),
     ];
     return Scaffold(
