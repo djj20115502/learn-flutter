@@ -7,7 +7,7 @@ import 'package:flutter_app/constant.dart';
 class KeepAliveDemo extends StatefulWidget {
   _KeepAliveDemoState createState() => _KeepAliveDemoState();
 }
- 
+
 /*
 with是dart的关键字，意思是混入的意思，
 就是说可以将一个或者多个类的功能添加到自己的类无需继承这些类，
@@ -48,12 +48,67 @@ class _KeepAliveDemoState extends State<KeepAliveDemo>
         body: TabBarView(
           controller: _controller,
           children: <Widget>[
-            MyHomePage(title: "1111"),
-            MyHomePage(title: "222"),
-            MyHomePage(title: "333")
+            test2(title: "A"),
+            test2(title: "B"),
+            test2(title: "C"),
           ],
         ));
   }
+}
+
+class test2 extends StatefulWidget {
+  final String title;
+  test2({Key key, this.title}) : super(key: key);
+
+  _test2State createState() => _test2State();
+}
+
+class _test2State extends State<test2>
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  TabController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    CommonUtils.log("initState " + widget.title + "___" + hashCode.toString());
+
+    _controller = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    CommonUtils.log("dispose " + widget.title + "___" + hashCode.toString());
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            title: Text('_test2State'),
+            bottom: TabBar(
+              controller: _controller,
+              tabs: [
+                Tab(icon: Icon(Icons.directions_subway)),
+                Tab(icon: Icon(Icons.directions_subway)),
+                Tab(icon: Icon(Icons.directions_subway)),
+              ],
+            )),
+        body: TabBarView(
+          controller: _controller,
+          children: <Widget>[
+            MyHomePage(title: widget.title + "11"),
+            MyHomePage(title: widget.title + "22"),
+            MyHomePage(title: widget.title + "33"),
+          ],
+        ));
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => widget.title.contains("A");
 }
 
 class MyHomePage extends StatefulWidget {
@@ -71,35 +126,37 @@ class _MyHomePageState extends State<MyHomePage>
   int _counter = 0;
   //重写keepAlive 为ture ，就是可以有记忆功能了。
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive =>  widget.title.contains("B");
   @override
   void initState() {
     super.initState();
-    CommonUtils.log("initState " + widget.title);
+    CommonUtils.log("initState " + widget.title + "___" + hashCode.toString());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    CommonUtils.log("didChangeDependencies " + widget.title);
+    CommonUtils.log(
+        "didChangeDependencies " + widget.title + "___" + hashCode.toString());
   }
 
   @override
   void didUpdateWidget(MyHomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    CommonUtils.log("didUpdateWidget " + widget.title);
+    CommonUtils.log(
+        "didUpdateWidget " + widget.title + "___" + hashCode.toString());
   }
 
   @override
   void dispose() {
     super.dispose();
-    CommonUtils.log("dispose " + widget.title);
+    CommonUtils.log("dispose " + widget.title + "___" + hashCode.toString());
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    CommonUtils.log("deactivate " + widget.title);
+    CommonUtils.log("deactivate " + widget.title + "___" + hashCode.toString());
   }
 
   //声明一个内部方法，用来点击按钮后增加数量
@@ -111,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
-    CommonUtils.log("build " + widget.title);
+    CommonUtils.log("build " + widget.title + "___" + hashCode.toString());
 
     return Scaffold(
       body: Center(
