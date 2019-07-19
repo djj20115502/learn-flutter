@@ -29,8 +29,7 @@ class _SearchBarDemoState extends State<SearchBarDemo> {
             onPressed: (){
                showSearch(context:context,delegate: searchBarDelegate());
             }
-            // showSearch(context:context,delegate: searchBarDelegate()),
-          ),
+           ),
         ]
       )
     );
@@ -39,6 +38,8 @@ class _SearchBarDemoState extends State<SearchBarDemo> {
 }
 
 class searchBarDelegate extends SearchDelegate<String>{
+
+  
   @override
   List<Widget> buildActions(BuildContext context){
     return [

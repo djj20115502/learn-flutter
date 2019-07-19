@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/navgater.dart';
 import 'package:flutter_app/step2/keeplive.dart' as keeplive;
+import 'package:flutter_app/step2/searchbar.dart';
 
 import 'constant.dart';
-import 'step2/searchbar.dart';
 
 void collectLog(String line) {
   print("DJJTEST error" + line);
@@ -98,6 +98,14 @@ class _MyHomePageState extends State<MyHomePage> {
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(
+                      context: context, delegate: _searchBarDelegate(shows));
+                })
+          ],
         ),
         body: GridView(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -164,4 +172,66 @@ class ItemBean {
   String title;
   VoidCallback onPress;
   ItemBean({this.title, this.onPress});
+}
+
+class _searchBarDelegate extends SearchDelegate<String> {
+  final List<ItemBean> itmes;
+
+  _searchBarDelegate(this.itmes);
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () => query = "",
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: AnimatedIcon(
+            icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
+        onPressed: () => close(context, null));
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container(
+      width: 100.0,
+      height: 100.0,
+      child: Card(
+        color: Colors.redAccent,
+        child: Center(
+          child: Text(query),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestionList = query.isEmpty
+        ? itmes
+        : itmes.where((input) => input.title.startsWith(query)).toList();
+    return ListView.builder(
+        itemCount: suggestionList.length,
+        itemBuilder: (context, index) => ListTile(
+              title: RichText(
+                  text: TextSpan(
+                      text: suggestionList[index]
+                          .title
+                          .substring(0, query.length),
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                      children: [
+                    TextSpan(
+                        text:
+                            suggestionList[index].title.substring(query.length),
+                        style: TextStyle(color: Colors.grey))
+                  ])),
+              onTap: suggestionList[index].onPress,
+            ));
+  }
 }
