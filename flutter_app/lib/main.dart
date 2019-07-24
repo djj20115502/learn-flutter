@@ -6,6 +6,7 @@ import 'package:flutter_app/step2/keeplive.dart' as keeplive;
 import 'package:flutter_app/step2/searchbar.dart';
 
 import 'constant.dart';
+import 'file/file.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -97,6 +98,11 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "WarpDemo",
           onPress: () {
             Navigator.push(context, CustomRoute(WarpDemo()));
+          }),
+      ItemBean(
+          title: "FileList",
+          onPress: () {
+            Navigator.push(context, CustomRoute(FileList()));
           }),
     ];
     return Scaffold(

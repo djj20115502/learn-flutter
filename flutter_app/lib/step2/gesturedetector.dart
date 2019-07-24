@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_app/constant.dart';
 
 class WarpDemo extends StatefulWidget {
-  _WarpDemoState createState() => _WarpDemoState();
+    createState() => _WarpDemoState();
 }
 
 class _WarpDemoState extends State<WarpDemo> {
@@ -59,7 +59,11 @@ class _WarpDemoState extends State<WarpDemo> {
           width: 80.0,
           height: 80.0,
           color: Colors.black54,
-          child: Icon(Icons.add),
+          child: RaisedButton(onPressed: () {
+             setState(() {
+            list.insert(list.length - 1, buildPhoto());
+             });
+          },)
         ),
       ),
     );
