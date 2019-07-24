@@ -6,6 +6,7 @@ import 'package:flutter_app/step2/keeplive.dart' as keeplive;
 import 'package:flutter_app/step2/searchbar.dart';
 
 import 'constant.dart';
+import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
   print("DJJTEST error" + line);
@@ -91,6 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "SearchBarDemo",
           onPress: () {
             Navigator.push(context, CustomRoute(SearchBarDemo()));
+          }),
+      ItemBean(
+          title: "WarpDemo",
+          onPress: () {
+            Navigator.push(context, CustomRoute(WarpDemo()));
           }),
     ];
     return Scaffold(
