@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,20 +12,30 @@ class FileList extends StatefulWidget {
 
 class _StatefulWidgetState extends State<StatefulWidget> {
   List<String> show = new List();
-
+  String title = "FileList";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     localPath();
+     _readCounter().then((onValue) {
+      _counter = onValue;
+      setState(() {
+        title = "FileList" + _counter.toString();
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
     return Scaffold(
-      appBar: AppBar(title: Text("FileList")),
+      appBar: AppBar(title: Text("$title")),
+      floatingActionButton: IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            _incrementCounter();
+            CommonUtils.log("_counter" + _counter.toString());
+          }),
       body: ListView.builder(
         itemCount: show.length,
         itemBuilder: (context, index) => ListTile(
@@ -50,5 +62,34 @@ class _StatefulWidgetState extends State<StatefulWidget> {
     } catch (err) {
       print(err);
     }
+  }
+
+  int _counter = 0;
+
+  Future<File> _getLocalFile() async {
+    // 获取应用目录
+    String dir = (await getExternalStorageDirectory()).path;
+    return new File('$dir/counter.txt');
+  }
+
+  Future<int> _readCounter() async {
+    try {
+      File file = await _getLocalFile();
+      // 读取点击次数（以字符串）
+      String contents = await file.readAsString();
+      CommonUtils.log("contents--------------" + contents);
+      return int.parse(contents);
+    } on FileSystemException {
+      return 0;
+    }
+  }
+
+  Future<Null> _incrementCounter() async {
+    setState(() {
+      _counter++;
+      title = "FileList" + _counter.toString();
+    });
+    // 将点击次数以字符串类型写到文件中
+    await (await _getLocalFile()).writeAsString('$_counter');
   }
 }
