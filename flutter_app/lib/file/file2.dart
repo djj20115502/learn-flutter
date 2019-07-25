@@ -23,6 +23,7 @@ class _StatefulWidgetState extends State<FileList2> {
     super.initState();
     localPath();
     _getBatteryLevel();
+    _getxls();
     _readCounter().then((onValue) {
       _counter = onValue;
       setState(() {
@@ -43,6 +44,18 @@ class _StatefulWidgetState extends State<FileList2> {
     setState(() {
       title = title + result;
     });
+  }
+
+  Future<Null> _getxls() async {
+    Map<dynamic, dynamic> result;
+    try {
+      result = await platform.invokeMethod('xls');
+    } on PlatformException catch (e) {
+      CommonUtils.log("result:" + e.message);
+    }
+    if (result != null) {
+      CommonUtils.log("result keys :" + result.keys.length.toString());
+    }
   }
 
   @override

@@ -23,23 +23,29 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("FlutterActivity", "onMethodCall");
+        Log.e("FlutterActivity", "onMethodCall" + Thread.currentThread().getName());
         GeneratedPluginRegistrant.registerWith(this);
         new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-                Log.e("FlutterActivity", "onMethodCall");
-                analyzeXls( getFilesDir().getParent()+"/app_flutter/test.x1s");
-                if (call.method.equals("just_test")) {
-                    result.success("just_testdddddddddd");
+                Log.e("FlutterActivity", "onMethodCall" + call.method + Thread.currentThread().getName());
+                switch (call.method) {
+                    case JUST_TEST:
+                        result.success("just_testdddddddddd");
+                        return;
+                    case XLS:
+                        result.success(analyzeXls(getFilesDir().getParent() + "/app_flutter/right.x1s"));
+                        return;
                 }
+                result.notImplemented();
             }
         });
 
     }
 
     private static final String CHANNEL = "samples.flutter.io";
-
+    private static final String XLS = "xls";
+    private static final String JUST_TEST = "just_test";
 
     public Map<String, List<List<String>>> analyzeXls(String fileName) {
         Map<String, List<List<String>>> map = new HashMap<>();
@@ -51,7 +57,7 @@ public class MainActivity extends FlutterActivity {
             for (Sheet sheet : sheets) {
                 rows = new ArrayList<>();
                 String sheetName = sheet.getName();
-                Log.e("FlutterActivity", "sheetName："+sheetName);
+                Log.e("FlutterActivity", "sheetName：" + sheetName);
                 for (int i = 0; i < sheet.getRows(); i++) {
                     Cell[] sheetRow = sheet.getRow(i);
                     int columnNum = sheet.getColumns();
@@ -62,7 +68,7 @@ public class MainActivity extends FlutterActivity {
                         columns.add(sheetRow[j].getContents());
                     }
                     rows.add(columns);
-                    Log.e("FlutterActivity", " "+columns);
+                    Log.e("FlutterActivity", " " + columns);
                 }
                 map.put(sheetName, rows);
             }
