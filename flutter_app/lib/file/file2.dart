@@ -88,7 +88,9 @@ class _StatefulWidgetState extends State<FileList2> {
 
   Future<File> _getLocalFile() async {
     // 获取应用目录
-    String dir = (await getExternalStorageDirectory()).path;
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    CommonUtils.log("dir--------------" + dir);
+
     return new File('$dir/counter.txt');
   }
 
