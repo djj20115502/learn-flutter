@@ -7,6 +7,7 @@ import 'package:flutter_app/step2/searchbar.dart';
 
 import 'constant.dart';
 import 'file/file.dart';
+import 'file/file2.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -103,6 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "FileList",
           onPress: () {
             Navigator.push(context, CustomRoute(FileList()));
+          }),
+      ItemBean(
+          title: "FileList2",
+          onPress: () {
+            Navigator.push(context, CustomRoute(FileList2()));
           }),
     ];
     return Scaffold(
