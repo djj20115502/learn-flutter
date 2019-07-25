@@ -23,23 +23,38 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("FlutterActivity", "onMethodCall" + Thread.currentThread().getName());
+        Log.e("FlutterActivity", "onMethodCall"
+                + Thread.currentThread().getName()
+                + Thread.currentThread().getId());
+        new Thread(() ->
+                Log.e("FlutterActivity", "onMethodCall tttttThread"
+                        + Thread.currentThread().getName()
+                        + Thread.currentThread().getId())
+                , "tttttThread").run();
         GeneratedPluginRegistrant.registerWith(this);
-        new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(new MethodChannel.MethodCallHandler() {
-            @Override
-            public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-                Log.e("FlutterActivity", "onMethodCall" + call.method + Thread.currentThread().getName());
-                switch (call.method) {
-                    case JUST_TEST:
-                        result.success("just_testdddddddddd");
-                        return;
-                    case XLS:
-                        result.success(analyzeXls(getFilesDir().getParent() + "/app_flutter/right.x1s"));
-                        return;
+        new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
+                (MethodCall call, MethodChannel.Result result) -> {
+                    Log.e("FlutterActivity", "onMethodCall"
+                            + call.method
+                            + Thread.currentThread().getName()
+                            + Thread.currentThread().getId());
+                    try {
+                        Thread.sleep(10 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    switch (call.method) {
+                        case JUST_TEST:
+                            result.success("just_testdddddddddd");
+                            return;
+                        case XLS:
+                            result.success(analyzeXls(getFilesDir().getParent() + "/app_flutter/right.x1s"));
+                            return;
+                    }
+                    result.notImplemented();
                 }
-                result.notImplemented();
-            }
-        });
+
+        );
 
     }
 

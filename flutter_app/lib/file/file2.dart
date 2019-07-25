@@ -21,15 +21,24 @@ class _StatefulWidgetState extends State<FileList2> {
   @override
   void initState() {
     super.initState();
-    localPath();
-    _getBatteryLevel();
-    _getxls();
-    _readCounter().then((onValue) {
-      _counter = onValue;
-      setState(() {
-        title = "FileList" + _counter.toString();
-      });
+
+    CommonUtils.log(
+        "onValue1" + new DateTime.now().millisecondsSinceEpoch.toString());
+
+    dddd().then((onValue) {
+      CommonUtils.log("onValue1" +
+          onValue +
+          new DateTime.now().millisecondsSinceEpoch.toString());
     });
+    dddd2();
+  }
+
+  Future<String> dddd() async {
+    return await getAJoke();
+  }
+
+  dddd2() async {
+    return await _getxls();
   }
 
   Future<Null> _getBatteryLevel() async {
@@ -43,6 +52,14 @@ class _StatefulWidgetState extends State<FileList2> {
     CommonUtils.log("result:" + result);
     setState(() {
       title = title + result;
+    });
+  }
+
+  Future<String> getAJoke() async {
+    return new Future<String>.delayed(new Duration(milliseconds: 10000), () {
+      //Do a long running task. E.g. Network Call.
+      //Return the result
+      return "This is a joke";
     });
   }
 
