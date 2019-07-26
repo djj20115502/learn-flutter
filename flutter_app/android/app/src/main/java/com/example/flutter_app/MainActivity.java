@@ -1,6 +1,8 @@
 package com.example.flutter_app;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import java.io.File;
@@ -20,40 +22,55 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 public class MainActivity extends FlutterActivity {
+    HandlerThread handlerThread;
+    Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("FlutterActivity", "onMethodCall"
                 + Thread.currentThread().getName()
                 + Thread.currentThread().getId());
-        new Thread(() ->
-                Log.e("FlutterActivity", "onMethodCall tttttThread"
-                        + Thread.currentThread().getName()
-                        + Thread.currentThread().getId())
-                , "tttttThread").run();
+
+        handlerThread = new HandlerThread("handlerThread");
+        handlerThread.start();
+        handler = new Handler(handlerThread.getLooper());
+        handler.post(() -> {
+                    Log.e("FlutterActivity", "post  "
+                            + Thread.currentThread().getName()
+                            + Thread.currentThread().getId());
+                }
+        );
+
         GeneratedPluginRegistrant.registerWith(this);
         new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
                 (MethodCall call, MethodChannel.Result result) -> {
-                    Log.e("FlutterActivity", "onMethodCall"
-                            + call.method
-                            + Thread.currentThread().getName()
-                            + Thread.currentThread().getId());
-                    try {
-                        Thread.sleep(10 * 1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    switch (call.method) {
-                        case JUST_TEST:
-                            result.success("just_testdddddddddd");
-                            return;
-                        case XLS:
-                            result.success(analyzeXls(getFilesDir().getParent() + "/app_flutter/right.x1s"));
-                            return;
-                    }
-                    result.notImplemented();
+                    handler.post(() -> {
+                        Log.e("FlutterActivity", "onMethodCall"
+                                + call.method
+                                + Thread.currentThread().getName()
+                                + Thread.currentThread().getId());
+                        try {
+                            Thread.sleep(1000*10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                switch (call.method) {
+                                    case JUST_TEST:
+                                        result.success("just_testdddddddddd");
+                                        return;
+                                    case XLS:
+                                        result.success(analyzeXls(getFilesDir().getParent() + "/app_flutter/right.x1s"));
+                                        return;
+                                }
+                                result.notImplemented();
+                            }
+                        });
+                    });
                 }
-
         );
 
     }
@@ -83,7 +100,7 @@ public class MainActivity extends FlutterActivity {
                         columns.add(sheetRow[j].getContents());
                     }
                     rows.add(columns);
-                    Log.e("FlutterActivity", " " + columns);
+//                    Log.e("FlutterActivity", " " + columns);
                 }
                 map.put(sheetName, rows);
             }

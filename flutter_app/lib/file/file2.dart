@@ -21,25 +21,15 @@ class _StatefulWidgetState extends State<FileList2> {
   @override
   void initState() {
     super.initState();
-
     CommonUtils.log(
         "onValue1" + new DateTime.now().millisecondsSinceEpoch.toString());
-
-    dddd().then((onValue) {
-      CommonUtils.log("onValue1" +
-          onValue +
-          new DateTime.now().millisecondsSinceEpoch.toString());
-    });
-    dddd2();
-  }
+    _getxls();
+   }
 
   Future<String> dddd() async {
     return await getAJoke();
   }
-
-  dddd2() async {
-    return await _getxls();
-  }
+ 
 
   Future<Null> _getBatteryLevel() async {
     String result;
@@ -57,8 +47,7 @@ class _StatefulWidgetState extends State<FileList2> {
 
   Future<String> getAJoke() async {
     return new Future<String>.delayed(new Duration(milliseconds: 10000), () {
-      //Do a long running task. E.g. Network Call.
-      //Return the result
+ 
       return "This is a joke";
     });
   }
@@ -66,7 +55,9 @@ class _StatefulWidgetState extends State<FileList2> {
   Future<Null> _getxls() async {
     Map<dynamic, dynamic> result;
     try {
-      result = await platform.invokeMethod('xls');
+      new Future<String>.delayed(new Duration(milliseconds: 10000), () {
+        return "This is a joke";
+      }).then((m)=>platform.invokeMethod('xls'));
     } on PlatformException catch (e) {
       CommonUtils.log("result:" + e.message);
     }

@@ -27,9 +27,24 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 }
 
 void main() {
+  
   runApp(MyApp());
+  print('main E');
+  foo();
+  print("main X");
+}
+foo() async {
+  print('foo E');
+  String value = await bar();
+  print('foo X $value');
 }
 
+bar() async {
+  print("bar E");
+  return "hello";
+}
+
+ 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   StatelessElement a;
