@@ -1,9 +1,8 @@
-import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../constant.dart';
 
@@ -23,8 +22,8 @@ class _StatefulWidgetState extends State<FileList2> {
     super.initState();
     CommonUtils.log(
         "onValue1" + new DateTime.now().millisecondsSinceEpoch.toString());
-    // _getxls();
-    _just_test();
+    _getxls();
+    // _just_test();
   }
 
   Future<Null> _just_test() async {
@@ -47,9 +46,39 @@ class _StatefulWidgetState extends State<FileList2> {
     } on PlatformException catch (e) {
       CommonUtils.log("result:" + e.message);
     }
-    if (result != null) {
-      CommonUtils.log("result keys :" + result.keys.length.toString());
+    if (result == null) {
+      return;
     }
+    CommonUtils.log("result keys :" +
+        result.runtimeType.toString() +
+        result.keys.length.toString());
+    for (var i in result.keys.toList()) {
+      CommonUtils.log("result keys " + i.runtimeType.toString() + i.toString());
+      CommonUtils.log("result runtimeType " + result[i].runtimeType.toString());
+      whilelist(result[i]);
+    }
+
+    CommonUtils.log("result keys :" + result.keys.length.toString());
+  }
+
+  whilelist(Object data) {
+    CommonUtils.log("whilelist  " +
+        data?.runtimeType.toString() +
+        data?.toString().substring(0, min(data?.toString().length, 10)));
+    if (data == null) {
+      return;
+    }
+    if (!(data is List)) {
+      return;
+    }
+    List<dynamic> list = data as List;
+    CommonUtils.log("whilelist  " + list.length.toString());
+    if (list.length == 0) {
+      CommonUtils.log("whilelist  list.length=0");
+
+      return;
+    }
+    whilelist(list[0]);
   }
 
   @override
