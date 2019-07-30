@@ -27,6 +27,11 @@ dependencies:
 
   # 文件操作
   path_provider: ^1.1.2
+
+  # 数据库操作
+  sqflite: ^1.1.6
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

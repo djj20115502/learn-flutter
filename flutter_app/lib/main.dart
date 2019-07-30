@@ -2,6 +2,7 @@ import 'dart:isolate';
 
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/sqflite/db.dart';
 import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/navgater.dart';
 import 'package:flutter_app/step2/keeplive.dart' as keeplive;
@@ -31,7 +32,8 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 
 void main() {
   runApp(MyApp());
-  TestIsolate.testIsolate();
+  // TestIsolate.testIsolate();
+  new Db().initDb();
 }
 
 class MyApp extends StatelessWidget {
