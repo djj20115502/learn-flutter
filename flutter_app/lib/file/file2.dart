@@ -1,3 +1,4 @@
+import 'dart:isolate';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -62,6 +63,8 @@ class _StatefulWidgetState extends State<FileList2> {
   }
 
   whilelist(Object data) {
+    var receivePort = new ReceivePort();
+    Isolate.spawn(echo, receivePort.sendPort);
     CommonUtils.log("whilelist  " +
         data?.runtimeType.toString() +
         data?.toString().substring(0, min(data?.toString().length, 10)));
@@ -75,10 +78,25 @@ class _StatefulWidgetState extends State<FileList2> {
     CommonUtils.log("whilelist  " + list.length.toString());
     if (list.length == 0) {
       CommonUtils.log("whilelist  list.length=0");
-
       return;
     }
     whilelist(list[0]);
+  }
+
+  echo(SendPort sendPort) async {
+    // 实例化一个ReceivePort 以接收消息
+    var port = new ReceivePort();
+
+    // 把它的sendPort发送给宿主isolate，以便宿主可以给它发送消息
+    sendPort.send(port.sendPort);
+
+    // 监听消息
+    await for (var msg in port) {
+      var data = msg[0];
+      SendPort replyTo = msg[1];
+      replyTo.send(data);
+      if (data == "bar") port.close();
+    }
   }
 
   @override

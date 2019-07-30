@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/step2/custome_router.dart';
@@ -27,24 +29,50 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 }
 
 void main() {
-  
   runApp(MyApp());
-  print('main E');
-  foo();
-  print("main X");
-}
-foo() async {
-  print('foo E');
-  String value = await bar();
-  print('foo X $value');
+  testIsolate();
 }
 
-bar() async {
-  print("bar E");
-  return "hello";
+void testIsolate() {
+  ReceivePort port = ReceivePort();
+  Isolate.spawn(fun, port.sendPort);
+
+  ///固定写法
+  port.listen((t) {
+    ///这里是设置当前receivePort 监听
+    print("接收到其他isolate发过来的消息！");
+
+    ///这里接收了其他isolate发送的消息
+    print(t);
+    print("1"+Isolate.current.debugName);
+
+    ///接收到的为fun方法里面发送的消息
+  });
+  port.sendPort.send("XXX");
+      print("3"+Isolate.current.debugName);
+
 }
 
- 
+void fun(SendPort sendPort) {
+  var receivePort = new ReceivePort();
+  var port = receivePort.sendPort;
+  port.send("a");
+
+  ///发送消息
+  sendPort.send("---");
+  print("2"+Isolate.current.debugName);
+
+  ///发送消息
+  receivePort.listen((t) {
+    ///这里是设置当前receivePort 监听
+    print("接收到当前isolate发过来的消息！");
+      print("4"+Isolate.current.debugName);
+
+    ///这里接收了当前发送的消息
+    print(t);
+  });
+}
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   StatelessElement a;
@@ -91,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "ListLayout",
           onPress: () =>
               Navigator.of(context).pushNamed(Router.R_ListLayoutTestRoute)),
-              
       ItemBean(
           title: "GridRoute",
           onPress: () => Navigator.of(context).pushNamed(Router.R_GridRoute)),
