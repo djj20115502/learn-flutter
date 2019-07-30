@@ -10,6 +10,7 @@ import 'package:flutter_app/step2/searchbar.dart';
 import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
+import 'learn/isolate.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -30,47 +31,7 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 
 void main() {
   runApp(MyApp());
-  testIsolate();
-}
-
-void testIsolate() {
-  ReceivePort port = ReceivePort();
-  Isolate.spawn(fun, port.sendPort);
-
-  ///固定写法
-  port.listen((t) {
-    ///这里是设置当前receivePort 监听
-    print("接收到其他isolate发过来的消息！");
-
-    ///这里接收了其他isolate发送的消息
-    print(t);
-    print("1"+Isolate.current.debugName);
-
-    ///接收到的为fun方法里面发送的消息
-  });
-  port.sendPort.send("XXX");
-      print("3"+Isolate.current.debugName);
-
-}
-
-void fun(SendPort sendPort) {
-  var receivePort = new ReceivePort();
-  var port = receivePort.sendPort;
-  port.send("a");
-
-  ///发送消息
-  sendPort.send("---");
-  print("2"+Isolate.current.debugName);
-
-  ///发送消息
-  receivePort.listen((t) {
-    ///这里是设置当前receivePort 监听
-    print("接收到当前isolate发过来的消息！");
-      print("4"+Isolate.current.debugName);
-
-    ///这里接收了当前发送的消息
-    print(t);
-  });
+  TestIsolate.testIsolate();
 }
 
 class MyApp extends StatelessWidget {
