@@ -88,10 +88,17 @@ abstract class Test {
 }
 
 abstract class CommonUtils {
-     static log(String s) {
+  static log(String s) {
     if (!Test.justTest) {
       return;
     }
     print("djjtest:" + s);
+  }
+
+    static log2(List s) {
+    if (!Test.justTest) {
+      return;
+    }
+    print("djjtest:" + s.toString());
   }
 }
