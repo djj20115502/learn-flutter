@@ -1,23 +1,18 @@
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
+ import 'package:sqflite/sqflite.dart';
 
-class Db {
+class Excel {
   Database database;
+
   getDb() async {
-     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (database == null) {
       database = await openDatabase('my_db.db');
     }
-    getApplicationDocumentsDirectory();
     return database;
   }
 
   initDb() async {
     var databasesPath = await getDatabasesPath();
     String path = databasesPath + '/demo.db';
-    await deleteDatabase(path);
-
     Database database = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
