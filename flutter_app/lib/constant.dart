@@ -95,10 +95,23 @@ abstract class CommonUtils {
     print("djjtest:" + s);
   }
 
-    static log2(List s) {
+  static log2(List s) {
     if (!Test.justTest) {
       return;
     }
     print("djjtest:" + s.toString());
+  }
+
+  static String ListToString(List<String> list,
+      {String div = ",", String coverL = "", String coverR = ""}) {
+    if (list == null || list.length == 0) {
+      return "null";
+    }
+     StringBuffer stringBuffer = new StringBuffer();
+    stringBuffer.write(coverL + list[0] + coverR);
+    for (String tmp in list) {
+      stringBuffer.write(div + coverL + tmp + coverR);
+    }
+    return stringBuffer.toString();
   }
 }

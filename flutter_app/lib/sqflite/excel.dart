@@ -65,6 +65,31 @@ class Excel {
     }
   }
 
+  insertData(
+      String tableEnName, List<String> columnNames, List<List<String>> data,
+      {bool needToEN = false}) async {
+    Database database = await getDb();
+    if (needToEN) {
+      for (int i = 0; i < columnNames.length; i++) {
+        columnNames[i] = await new Column().getEnColumn(columnNames[i]);
+      }
+      tableEnName = await new Column().getEnColumn(tableEnName);
+    }
+
+    String clm = CommonUtils.ListToString(columnNames );
+    List<String> valueList = new List();
+    for (List<String> tmp in data) {
+      valueList.add(CommonUtils.ListToString(tmp, coverL: "'", coverR: "'"));
+    }
+    String value =
+        CommonUtils.ListToString(valueList, coverL: "(", coverR: ")");
+    String dbstring = 'INSERT INTO $tableEnName (  $clm ) VALUES $value';
+    CommonUtils.log2(["insertData dbstring::", dbstring]);
+
+    int ans = await database.rawInsert(dbstring);
+    CommonUtils.log2(["insertData ans", ans.toString()]);
+  }
+
   /// 获得表需要新加入的字段名称
   Future<List<String>> checkIsSameTable(
       String theEnTableName, List<String> columnName) async {

@@ -58,7 +58,7 @@ class _StatefulWidgetState extends State<FileList2> {
     for (var i in result.keys.toList()) {
       CommonUtils.log("result keys " + i.runtimeType.toString() + i.toString());
       CommonUtils.log("result runtimeType " + result[i].runtimeType.toString());
-      whilelist(result[i]);
+      // whilelist(result[i]);
       try {
         List<List<String>> a = result[i] as List<List<String>>;
         CommonUtils.log2(["aaaa", a]);
@@ -72,7 +72,7 @@ class _StatefulWidgetState extends State<FileList2> {
   }
 
   writeToDb(String tableName, Object list) {
-    if("勿动".compareTo(tableName)==0){
+    if ("勿动".compareTo(tableName) == 0) {
       return;
     }
     if (list is! List) {
@@ -84,7 +84,13 @@ class _StatefulWidgetState extends State<FileList2> {
     }
 
     try {
-      new Excel().createTable(tableName, new List<String>.from(L1[0]));
+      List<String> columnNames = new List<String>.from(L1[0]);
+      new Excel().createTable(tableName, columnNames);
+      List<List<String>> data = new List();
+      for (int i = 1; i < L1.length; i++) {
+        data.add(new List<String>.from(L1[i]));
+      }
+      new Excel().insertData(tableName, columnNames, data, needToEN: true);
     } catch (e) {
       CommonUtils.log2(["writeToDb", e]);
     }
