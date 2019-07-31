@@ -16,6 +16,7 @@ class Excel {
   }
 
   static test() async {
+    //另外注意这点，用了 await 才能保证这块能顺序执行，用then，或者直接不加await都会继续直接执行后续的逻辑，这里涉及到数据库操作会有时序问题
     await new Excel().createTable("Test", ["x", "sd"]);
     await new Excel().createTable("我们", ["x", "sd"]);
     await new Excel().createTable("卧们", ["x", "sd"]);
