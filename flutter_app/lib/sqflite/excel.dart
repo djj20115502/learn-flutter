@@ -1,63 +1,99 @@
- import 'package:sqflite/sqflite.dart';
+import 'package:flutter_app/constant.dart';
+import 'package:flutter_app/sqflite/column.dart';
+import 'package:sqflite/sqflite.dart';
 
 class Excel {
+  static const DbName = "demo.db";
+  static const DbVersion = 1;
   Database database;
 
-  getDb() async {
+  Future<Database> getDb() async {
     if (database == null) {
-      database = await openDatabase('my_db.db');
+      String path = await getDatabasesPath().then((m) => m + "/" + DbName);
+      database = await openDatabase(path, version: DbVersion);
     }
     return database;
   }
 
-  initDb() async {
-    var databasesPath = await getDatabasesPath();
-    String path = databasesPath + '/demo.db';
-    Database database = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute(
-          'CREATE TABLE Test (id INTEGER PRIMARY KEY, name TEXT, value INTEGER, num REAL)');
-    });
-
-// Insert some records in a transaction
-    await database.transaction((txn) async {
-      int id1 = await txn.rawInsert(
-          'INSERT INTO Test(name, value, num) VALUES("some name", 1234, 456.789)');
-      print('inserted1: $id1');
-      int id2 = await txn.rawInsert(
-          'INSERT INTO Test(name, value, num) VALUES(?, ?, ?)',
-          ['another name', 12345678, 3.1416]);
-      print('inserted2: $id2');
-    });
-
-// Update some record
-    int count = await database.rawUpdate(
-        'UPDATE Test SET name = ?, VALUE = ? WHERE name = ?',
-        ['updated name', '9876', 'some name']);
-    print('updated: $count');
-
-// Get the records
-    List<Map> list = await database.rawQuery('SELECT * FROM Test');
-    List<Map> expectedList = [
-      {'name': 'updated name', 'id': 1, 'value': 9876, 'num': 456.789},
-      {'name': 'another name', 'id': 2, 'value': 12345678, 'num': 3.1416}
-    ];
-    print(list);
-    print(expectedList);
-
-// Count the records
-    count = Sqflite.firstIntValue(
-        await database.rawQuery('SELECT COUNT(*) FROM Test'));
-    assert(count == 2);
-
-// Delete a record
-    count = await database
-        .rawDelete('DELETE FROM Test WHERE name = ?', ['another name']);
-    assert(count == 1);
-
-// Close the database
-    await database.close();
+  static test() async {
+    await new Excel().createTable("Test", ["x", "sd"]);
+    await new Excel().createTable("我们", ["x", "sd"]);
+    await new Excel().createTable("卧们", ["x", "sd"]);
+    await new Excel().createTable("卧们", ["xxx"]);
   }
 
+  ///根据名称与列名来创建表格，
+  ///1判断是否已存在名称相同的表， yes 检查是否已包含全部的列，如果有新增就添加.   NO  直接添加新表
+  createTable(String tableName, List<String> column) async {
+    String theEnTableName = await new Column().getEnColumn(tableName);
+    Database database = await getDb();
+
+    CommonUtils.log2(["createTable ", tableName, theEnTableName]);
+    bool hadTable = await database
+        .rawQuery("select name from sqlite_master where name='$theEnTableName'")
+        .then((m) {
+      CommonUtils.log2(["select name from sqlite_master where name  ----", m]);
+      return m != null && m.length > 0;
+    });
+    CommonUtils.log2(["hadTable", tableName, hadTable]);
+
+    if (!hadTable) {
+      StringBuffer stringBuffer = new StringBuffer();
+      stringBuffer.write("(");
+      for (int i = 0; i < column.length - 1; i++) {
+        stringBuffer.write(column[i] + " TEXT,");
+      }
+      stringBuffer.write(column[column.length - 1] + " TEXT)");
+
+      String columns = stringBuffer.toString();
+
+      await database.execute('CREATE TABLE  $theEnTableName $columns');
+      return;
+    }
+    List<String> addColumn = await checkIsSameTable(theEnTableName, column);
+    CommonUtils.log2(["addColumn", tableName, addColumn]);
+
+    if (addColumn == null) {
+      return;
+    }
+    for (String tmp in addColumn) {
+      await database.execute("alter table $theEnTableName add  $tmp TEXT");
+    }
+  }
+
+  /// 获得表需要新加入的字段名称
+  Future<List<String>> checkIsSameTable(
+      String theEnTableName, List<String> columnName) async {
+    List<String> theColumns = await new Column()
+        .getEnColumn(theEnTableName)
+        .then((m) => getColumn(m));
+    CommonUtils.log2(["theColumns  ", theColumns]);
+
+    if (theColumns == null) {
+      return columnName;
+    }
+    List<String> rt = new List();
+    for (String tmp in columnName) {
+      if (theColumns.contains(tmp)) {
+        continue;
+      }
+      rt.add(tmp);
+    }
+    return rt;
+  }
+
+  ///获取表名中的字段名称
+  Future<List<String>> getColumn(String tableName) async => getDb()
+          .then((m) => m.rawQuery('PRAGMA table_info($tableName) '))
+          .then((m) {
+        if (m == null) return null;
+        List<String> column = new List();
+        for (Map<String, dynamic> a in m) {
+          column.add(a["name"]);
+        }
+        return column;
+      }).catchError((error) => null);
+
+  
   close() => database?.close();
 }

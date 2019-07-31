@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/sqflite/db.dart';
+import 'package:flutter_app/sqflite/excel.dart';
 import 'package:flutter_app/sqflite/sharepf.dart';
 import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/navgater.dart';
@@ -34,8 +35,10 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 void main() {
   runApp(MyApp());
   // TestIsolate.testIsolate();
-  new Db().initDb();
-  TestSF().test();
+  // new Db().initDb();
+  // TestSF().test();
+ 
+  Excel.test();
 }
 
 class MyApp extends StatelessWidget {
