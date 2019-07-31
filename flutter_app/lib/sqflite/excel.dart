@@ -26,6 +26,7 @@ class Excel {
   ///根据名称与列名来创建表格，
   ///1判断是否已存在名称相同的表， yes 检查是否已包含全部的列，如果有新增就添加.   NO  直接添加新表
   createTable(String tableName, List<String> column) async {
+    CommonUtils.log2(["createTable  ----", tableName, column]);
     String theEnTableName = await new Column().getEnColumn(tableName);
     Database database = await getDb();
 
@@ -42,9 +43,11 @@ class Excel {
       StringBuffer stringBuffer = new StringBuffer();
       stringBuffer.write("(");
       for (int i = 0; i < column.length - 1; i++) {
-        stringBuffer.write(column[i] + " TEXT,");
+        stringBuffer
+            .write(await new Column().getEnColumn(column[i]) + " TEXT,");
       }
-      stringBuffer.write(column[column.length - 1] + " TEXT)");
+      stringBuffer.write(
+          await new Column().getEnColumn(column[column.length + 1]) + " TEXT)");
 
       String columns = stringBuffer.toString();
 
@@ -95,6 +98,5 @@ class Excel {
         return column;
       }).catchError((error) => null);
 
-  
   close() => database?.close();
 }

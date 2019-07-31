@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/sqflite/excel.dart';
 
 import '../constant.dart';
 
@@ -53,18 +54,43 @@ class _StatefulWidgetState extends State<FileList2> {
     CommonUtils.log("result keys :" +
         result.runtimeType.toString() +
         result.keys.length.toString());
+
     for (var i in result.keys.toList()) {
       CommonUtils.log("result keys " + i.runtimeType.toString() + i.toString());
       CommonUtils.log("result runtimeType " + result[i].runtimeType.toString());
       whilelist(result[i]);
+      try {
+        List<List<String>> a = result[i] as List<List<String>>;
+        CommonUtils.log2(["aaaa", a]);
+      } catch (e) {
+        CommonUtils.log2(["_getxls", e]);
+      }
+      writeToDb(i.toString(), result[i]);
     }
 
     CommonUtils.log("result keys :" + result.keys.length.toString());
   }
 
+  writeToDb(String tableName, Object list) {
+    if("勿动".compareTo(tableName)==0){
+      return;
+    }
+    if (list is! List) {
+      return;
+    }
+    List L1 = list as List;
+    if (L1 == null || L1.length < 1 || L1[0] is! List) {
+      return;
+    }
+
+    try {
+      new Excel().createTable(tableName, new List<String>.from(L1[0]));
+    } catch (e) {
+      CommonUtils.log2(["writeToDb", e]);
+    }
+  }
+
   whilelist(Object data) {
-    var receivePort = new ReceivePort();
-    Isolate.spawn(echo, receivePort.sendPort);
     CommonUtils.log("whilelist  " +
         data?.runtimeType.toString() +
         data?.toString().substring(0, min(data?.toString().length, 10)));
@@ -81,22 +107,6 @@ class _StatefulWidgetState extends State<FileList2> {
       return;
     }
     whilelist(list[0]);
-  }
-
-  echo(SendPort sendPort) async {
-    // 实例化一个ReceivePort 以接收消息
-    var port = new ReceivePort();
-
-    // 把它的sendPort发送给宿主isolate，以便宿主可以给它发送消息
-    sendPort.send(port.sendPort);
-
-    // 监听消息
-    await for (var msg in port) {
-      var data = msg[0];
-      SendPort replyTo = msg[1];
-      replyTo.send(data);
-      if (data == "bar") port.close();
-    }
   }
 
   @override

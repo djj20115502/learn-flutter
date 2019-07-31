@@ -7,9 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Column {
   ///通过中文得到唯一的拼音，同音字其后加数字
   Future<String> getEnColumn(String chinese) async {
+
     if (chinese == null) {
       return chinese;
     }
+    
     if (!ChineseHelper.isChinese(chinese)) {
       return chinese;
     }
