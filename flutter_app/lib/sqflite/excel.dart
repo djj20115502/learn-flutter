@@ -38,16 +38,24 @@ class Excel {
 
     List<String> valueList = new List();
     for (List<String> tmp in data) {
-      valueList.add(CommonUtils.listToString(tmp, coverL: "'", coverR: "'"));
+      String line = CommonUtils.listToString(tmp, coverL: "'", coverR: "'");
+      line = line.hashCode.toString() + "," + line;
+      valueList.add(line);
     }
     String value =
         CommonUtils.listToString(valueList, coverL: "(", coverR: ")");
     String clm = CommonUtils.listToString(columnNames);
-    String dbstring = 'INSERT INTO $tableEnName (  $clm ) VALUES $value';
+    String dbstring = 'INSERT INTO $tableEnName ( HASH ,  $clm ) VALUES $value';
     CommonUtils.log2(["insertData dbstring::", dbstring]);
 
     int ans = await database.rawInsert(dbstring);
     CommonUtils.log2(["insertData ans", ans.toString()]);
+
+    ///根据hash值来去重
+    String delete = "delete from $tableEnName where HASH  in" +
+        " (select  HASH  from $tableEnName   group  by  HASH   having  count(HASH) > 1)  " +
+        "and rowid not in (select min(rowid) from  $tableEnName   group by HASH  having count(HASH)>1)";
+    await database.execute(delete);
   }
 
   ///根据名称与列名来创建表格，
@@ -65,7 +73,8 @@ class Excel {
 
     if (!hadTable) {
       String columns = CommonUtils.listToString(enColumn, coverR: " TEXT");
-      await database.execute('CREATE TABLE  $enTableName ( $columns ) ');
+      await database
+          .execute('CREATE TABLE  $enTableName ( HASH INTEGER, $columns ) ');
       return;
     }
     List<String> addColumn = await _checkIsSameTable(enTableName, enColumn);

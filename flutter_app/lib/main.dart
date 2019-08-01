@@ -164,6 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class NewRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    test();
     var args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
@@ -181,6 +182,13 @@ class NewRoute extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  test() {
+    String s = "s";
+    CommonUtils.log2(["initState", "s".hashCode, s.hashCode]);
+    s = "sdfdsf";
+    CommonUtils.log2(["initState", "sdfdsf".hashCode, s.hashCode]);
   }
 }
 
