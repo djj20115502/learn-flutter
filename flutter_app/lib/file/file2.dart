@@ -71,7 +71,7 @@ class _StatefulWidgetState extends State<FileList2> {
     CommonUtils.log("result keys :" + result.keys.length.toString());
   }
 
-  writeToDb(String tableName, Object list) {
+  writeToDb(String tableName, Object list) async {
     if ("勿动".compareTo(tableName) == 0) {
       return;
     }
@@ -85,12 +85,12 @@ class _StatefulWidgetState extends State<FileList2> {
 
     try {
       List<String> columnNames = new List<String>.from(L1[0]);
-      new Excel().createTable(tableName, columnNames);
-      List<List<String>> data = new List();
+       List<List<String>> data = new List();
       for (int i = 1; i < L1.length; i++) {
         data.add(new List<String>.from(L1[i]));
       }
-      new Excel().insertData(tableName, columnNames, data, needToEN: true);
+      await new Excel()
+          .insertData(tableName, columnNames, data, needToEN: true);
     } catch (e) {
       CommonUtils.log2(["writeToDb", e]);
     }

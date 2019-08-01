@@ -102,16 +102,17 @@ abstract class CommonUtils {
     print("djjtest:" + s.toString());
   }
 
-  static String ListToString(List<String> list,
+  static String listToString(List<String> list,
       {String div = ",", String coverL = "", String coverR = ""}) {
     if (list == null || list.length == 0) {
       return "null";
     }
-     StringBuffer stringBuffer = new StringBuffer();
+    StringBuffer stringBuffer = new StringBuffer();
     stringBuffer.write(coverL + list[0] + coverR);
-    for (String tmp in list) {
-      stringBuffer.write(div + coverL + tmp + coverR);
+    for (int i = 1; i < list.length; i++) {
+      stringBuffer.write(div + coverL + list[i] + coverR);
     }
+
     return stringBuffer.toString();
   }
 }
