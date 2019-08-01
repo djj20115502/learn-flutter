@@ -74,7 +74,7 @@ class Excel {
     if (!hadTable) {
       String columns = CommonUtils.listToString(enColumn, coverR: " TEXT");
       await database
-          .execute('CREATE TABLE  $enTableName ( HASH INTEGER, $columns ) ');
+          .execute('CREATE TABLE  $enTableName ( HASH INTEGER, create_time TIMESTAMP NOT NULL DEFAULT current_timestamp,$columns ) ');
       return;
     }
     List<String> addColumn = await _checkIsSameTable(enTableName, enColumn);
