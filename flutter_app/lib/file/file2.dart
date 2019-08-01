@@ -14,7 +14,7 @@ class FileList2 extends StatefulWidget {
 
 class _StatefulWidgetState extends State<FileList2> {
   static const platform = const MethodChannel('samples.flutter.io');
-
+  Excel excel;
   List<String> show = new List();
   String title = "FileList";
   String batteryLevel = "";
@@ -22,10 +22,17 @@ class _StatefulWidgetState extends State<FileList2> {
   @override
   void initState() {
     super.initState();
+    excel = new Excel();
     CommonUtils.log(
         "onValue1" + new DateTime.now().millisecondsSinceEpoch.toString());
     _getxls();
     // _just_test();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    excel.close();
   }
 
   Future<Null> _just_test() async {
@@ -89,8 +96,7 @@ class _StatefulWidgetState extends State<FileList2> {
       for (int i = 1; i < L1.length; i++) {
         data.add(new List<String>.from(L1[i]));
       }
-      await new Excel()
-          .insertData(tableName, columnNames, data, needToEN: true);
+      await excel.insertData(tableName, columnNames, data, needToEN: true);
     } catch (e) {
       CommonUtils.log2(["writeToDb", e]);
     }

@@ -73,8 +73,8 @@ class Excel {
 
     if (!hadTable) {
       String columns = CommonUtils.listToString(enColumn, coverR: " TEXT");
-      await database
-          .execute('CREATE TABLE  $enTableName ( HASH INTEGER, create_time TIMESTAMP NOT NULL DEFAULT current_timestamp,$columns ) ');
+      await database.execute(
+          'CREATE TABLE  $enTableName ( HASH INTEGER, create_time TIMESTAMP NOT NULL DEFAULT current_timestamp,$columns ) ');
       return;
     }
     List<String> addColumn = await _checkIsSameTable(enTableName, enColumn);
@@ -120,6 +120,27 @@ class Excel {
         }
         return column;
       }).catchError((error) => null);
+
+  ///获取数据中的表名
+  Future<List<String>> getTableNames() async {
+    Database db = await getDb();
+    List<Map<String, dynamic>> ans =
+        await db.rawQuery("select name from sqlite_master");
+    CommonUtils.log2([ans]);
+    if (ans == null) {
+      return null;
+    }
+    List<String> rt = new List();
+
+    for (Map<String, dynamic> tmp in ans) {
+      String name = tmp["name"];
+      if (name == "android_metadata") {
+        continue;
+      }
+      rt.add(await columnTools.getChinese(name));
+    }
+    return rt;
+  }
 
   close() => database?.close();
 }
