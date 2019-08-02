@@ -34,8 +34,14 @@ class _ReadState extends State<Read> {
           }),
       body: ListView.builder(
         itemCount: tables.length,
-        itemBuilder: (context, index) => ListTile(
-          title: Text("${index+1}  ${tables[index]}"),
+        itemBuilder: (context, index) => ExpansionTile(
+          title: Text("${index + 1}  ${tables[index]}"),
+          leading: Icon(Icons.ac_unit),
+          backgroundColor: Colors.white12,
+          children: <Widget>[
+            ListTile(title: Text('list tile'), subtitle: Text('subtitle'))
+          ],
+          initiallyExpanded: index == 0,
         ),
       ),
     );

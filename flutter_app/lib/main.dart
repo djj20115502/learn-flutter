@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
       ),
+      debugShowCheckedModeBanner: false,
       home: MyHomePage(title: 'Just test'),
       routes: Router.routes,
     );
@@ -123,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }),
       ItemBean(
           title: "读数据库",
+          message: "读取所有的数据库",
           onPress: () {
             Navigator.push(context, CustomRoute(Read()));
           }),
@@ -133,12 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
           actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  showSearch(
-                      context: context, delegate: _searchBarDelegate(shows));
-                })
+            Tooltip(
+                message: "根据名称收索",
+                child: IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(
+                          context: context,
+                          delegate: _searchBarDelegate(shows));
+                    }))
           ],
         ),
         body: GridView(
@@ -212,8 +217,9 @@ class RandomWordsWidget extends StatelessWidget {
 
 class ItemBean {
   String title;
+  String message;
   VoidCallback onPress;
-  ItemBean({this.title, this.onPress});
+  ItemBean({this.title, this.onPress, this.message});
 }
 
 class _searchBarDelegate extends SearchDelegate<String> {

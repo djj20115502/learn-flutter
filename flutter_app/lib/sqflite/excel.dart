@@ -139,6 +139,13 @@ class Excel {
       }
       rt.add(await columnTools.getChinese(name));
     }
+    if (Test.justTest) {
+      rt.add(rt[0]);
+      rt.add(rt[0]);
+      rt.add(rt[0]);
+      rt.add(rt[0]);
+      rt.add(rt[0]);
+    }
     return rt;
   }
 

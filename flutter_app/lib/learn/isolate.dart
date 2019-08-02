@@ -1,95 +1,85 @@
 import 'dart:isolate';
-import 'dart:math';
 
-import 'package:flutter/services.dart';
+import '../test.dart';
 
-import '../constant.dart';
-
-class TestIsolate {
-  static const platform = const MethodChannel('samples.flutter.io');
-
-  static void testIsolate() {
-    ReceivePort port = ReceivePort();
-    Isolate.spawn(fun, port.sendPort);
-
-    ///固定写法
-    port.listen((t) {
-      ///这里是设置当前receivePort 监听
-      print("接收到其他isolate发过来的消息！");
-
-      ///这里接收了其他isolate发送的消息
-      print(t);
-      print("1" + Isolate.current.debugName);
-
-      ///接收到的为fun方法里面发送的消息
-    });
-    port.sendPort.send("XXX");
-    print("3" + Isolate.current.debugName);
-    try {
-      new TestIsolate()._getxls();
-    } catch (e) {
-      CommonUtils.log(e.toString());
-    }
-  }
-
-  static void fun(SendPort sendPort) {
-    var receivePort = new ReceivePort();
-    var port = receivePort.sendPort;
-    port.send("a");
-
-    ///发送消息
-    sendPort.send("---");
-    print("2" + Isolate.current.debugName);
-
-    ///发送消息
-    receivePort.listen((t) {
-      ///这里是设置当前receivePort 监听
-      print("接收到当前isolate发过来的消息！");
-      print("4" + Isolate.current.debugName);
-
-      ///这里接收了当前发送的消息
-      print(t);
-    });
-  }
-
-  Future<Null> _getxls() async {
-    Map<dynamic, dynamic> result;
-    try {
-      result = await platform.invokeMethod('xls');
-    } on PlatformException catch (e) {
-      CommonUtils.log("result:" + e.message);
-    }
-    if (result == null) {
-      return;
-    }
-    CommonUtils.log("result keys :" +
-        result.runtimeType.toString() +
-        result.keys.length.toString());
-    for (var i in result.keys.toList()) {
-      CommonUtils.log("result keys " + i.runtimeType.toString() + i.toString());
-      CommonUtils.log("result runtimeType " + result[i].runtimeType.toString());
-      whilelist(result[i]);
-    }
-
-    CommonUtils.log("result keys :" + result.keys.length.toString());
-  }
-
-  whilelist(Object data) {
-    CommonUtils.log("whilelist  " +
-        data?.runtimeType.toString() +
-        data?.toString().substring(0, min(data?.toString().length, 10)));
-    if (data == null) {
-      return;
-    }
-    if (!(data is List)) {
-      return;
-    }
-    List<dynamic> list = data as List;
-    CommonUtils.log("whilelist  " + list.length.toString());
-    if (list.length == 0) {
-      CommonUtils.log("whilelist  list.length=0");
-      return;
-    }
-    whilelist(list[0]);
+main() async {
+  try {
+    await tyrcar().catchError((e) => CommonUtils.log2([e]));
+  } catch (e) {
+    CommonUtils.log2([e]);
   }
 }
+
+Future tyrcar() async {
+  var receivePort = new ReceivePort();
+  await Isolate.spawn(echo, receivePort.sendPort);
+
+  // 'echo'发送的第一个message，是它的SendPort
+  var sendPort = await receivePort.first;
+  CommonUtils.log2(['旧的', Isolate.current.hashCode.toString()]);
+
+  var msg = await sendReceive(sendPort, "foo");
+  CommonUtils.log2(
+      ['received', msg, '旧的', Isolate.current.hashCode.toString()]);
+
+  msg = await sendReceive(sendPort, "bara");
+  CommonUtils.log2(
+      ['received', msg, '旧的', Isolate.current.hashCode.toString()]);
+      var a= new TestObject(data:"d123456");
+
+  var ans = await sendReceive(sendPort, a)
+      .catchError((m) => CommonUtils.log2([m]));
+  CommonUtils.log2(
+      ['received', ans.runtimeType, '旧的', Isolate.current.hashCode.toString(),a.hashCode,ans.hashCode,ans.toString()]);
+}
+
+/// 新isolate的入口函数
+echo(SendPort sendPort) async {
+  // 实例化一个ReceivePort 以接收消息
+  var port = new ReceivePort();
+
+  // 把它的sendPort发送给宿主isolate，以便宿主可以给它发送消息
+  sendPort.send(port.sendPort);
+  print('新的   ' + Isolate.current.hashCode.toString());
+
+  // 监听消息
+  await for (var msg in port) {
+    CommonUtils.log2([
+      '新的',
+      Isolate.current.hashCode.toString(),
+      "msg:::",
+      msg,
+      msg[0].runtimeType
+    ]);
+    var data = msg[0];
+    SendPort replyTo = msg[1];
+    CommonUtils.log2(
+        ["data.runtimeType is String", data.runtimeType,data.hashCode]);
+    if (data is String) {
+      replyTo.send(data + "回复");
+    } else {
+      replyTo.send(data);
+    }
+    if (data == "bar") port.close();
+    
+  }
+}
+
+/// 对某个port发送消息，并接收结果
+Future sendReceive(SendPort port,var msg) {
+  ReceivePort response = new ReceivePort();
+  port.send([msg, response.sendPort]);  
+  return response.first;
+}
+
+class TestObject {
+  String data;
+  TestObject({this.data});
+
+  @override
+  String toString() {
+     return data;
+  }
+}
+
+class TestObject2 {}
