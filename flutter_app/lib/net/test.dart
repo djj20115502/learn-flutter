@@ -25,6 +25,18 @@ Future<String> getHttp() async {
   }
 }
 
+Future<String> post() async {
+  try {
+    Response response;
+    var data = {'vehicle_type': "car"};
+    response = await Dio()
+        .post("http://car1.i.cacf.cn/car/factory/lists", queryParameters: data);
+    return response.toString().substring(0,200);
+  } catch (e) {
+    return e.toString();
+  }
+}
+
 class NetShowView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -39,7 +51,7 @@ class _Nstate extends State<NetShowView> {
   void initState() {
     super.initState();
 
-    getHttp().then((m) => setState(() {
+    post().then((m) => setState(() {
           showANS = m;
         }));
   }
