@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/file/read.dart';
+import 'package:flutter_app/net/test.dart';
 import 'package:flutter_app/sqflite/db.dart';
 import 'package:flutter_app/sqflite/excel.dart';
 import 'package:flutter_app/sqflite/sharepf.dart';
@@ -127,6 +128,11 @@ class _MyHomePageState extends State<MyHomePage> {
           message: "读取所有的数据库",
           onPress: () {
             Navigator.push(context, CustomRoute(Read()));
+          }),
+      ItemBean(
+          title: "网络访问",
+          onPress: () {
+            Navigator.push(context, CustomRoute(NetShowView()));
           }),
     ];
     return Scaffold(
