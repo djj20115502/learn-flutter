@@ -1,9 +1,10 @@
-import 'dart:io';
+import 'dart:isolate';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_app/sqflite/excel.dart';
 
 import '../constant.dart';
 
@@ -13,7 +14,7 @@ class FileList2 extends StatefulWidget {
 
 class _StatefulWidgetState extends State<FileList2> {
   static const platform = const MethodChannel('samples.flutter.io');
-
+  Excel excel;
   List<String> show = new List();
   String title = "FileList";
   String batteryLevel = "";
@@ -21,49 +22,103 @@ class _StatefulWidgetState extends State<FileList2> {
   @override
   void initState() {
     super.initState();
+    excel = new Excel();
     CommonUtils.log(
         "onValue1" + new DateTime.now().millisecondsSinceEpoch.toString());
     _getxls();
-   }
-
-  Future<String> dddd() async {
-    return await getAJoke();
+    // _just_test();
   }
- 
 
-  Future<Null> _getBatteryLevel() async {
+  @override
+  void dispose() {
+    super.dispose();
+    excel.close();
+  }
+
+  Future<Null> _just_test() async {
     String result;
     try {
       result = await platform.invokeMethod('just_test');
     } on PlatformException catch (e) {
       result = e.message;
     }
-
-    CommonUtils.log("result:" + result);
+    CommonUtils.log(" just_test result:" + result);
     setState(() {
       title = title + result;
-    });
-  }
-
-  Future<String> getAJoke() async {
-    return new Future<String>.delayed(new Duration(milliseconds: 10000), () {
- 
-      return "This is a joke";
     });
   }
 
   Future<Null> _getxls() async {
     Map<dynamic, dynamic> result;
     try {
-      new Future<String>.delayed(new Duration(milliseconds: 10000), () {
-        return "This is a joke";
-      }).then((m)=>platform.invokeMethod('xls'));
+      result = await platform.invokeMethod('xls');
     } on PlatformException catch (e) {
       CommonUtils.log("result:" + e.message);
     }
-    if (result != null) {
-      CommonUtils.log("result keys :" + result.keys.length.toString());
+    if (result == null) {
+      return;
     }
+    CommonUtils.log("result keys :" +
+        result.runtimeType.toString() +
+        result.keys.length.toString());
+
+    for (var i in result.keys.toList()) {
+      CommonUtils.log("result keys " + i.runtimeType.toString() + i.toString());
+      CommonUtils.log("result runtimeType " + result[i].runtimeType.toString());
+      // whilelist(result[i]);
+      try {
+        List<List<String>> a = result[i] as List<List<String>>;
+        CommonUtils.log2(["aaaa", a]);
+      } catch (e) {
+        CommonUtils.log2(["_getxls", e]);
+      }
+      writeToDb(i.toString(), result[i]);
+    }
+
+    CommonUtils.log("result keys :" + result.keys.length.toString());
+  }
+
+  writeToDb(String tableName, Object list) async {
+    if ("勿动".compareTo(tableName) == 0) {
+      return;
+    }
+    if (list is! List) {
+      return;
+    }
+    List L1 = list as List;
+    if (L1 == null || L1.length < 1 || L1[0] is! List) {
+      return;
+    }
+
+    try {
+      List<String> columnNames = new List<String>.from(L1[0]);
+      List<List<String>> data = new List();
+      for (int i = 1; i < L1.length; i++) {
+        data.add(new List<String>.from(L1[i]));
+      }
+      await excel.insertData(tableName, columnNames, data, needToEN: true);
+    } catch (e) {
+      CommonUtils.log2(["writeToDb", e]);
+    }
+  }
+
+  whilelist(Object data) {
+    CommonUtils.log("whilelist  " +
+        data?.runtimeType.toString() +
+        data?.toString().substring(0, min(data?.toString().length, 10)));
+    if (data == null) {
+      return;
+    }
+    if (!(data is List)) {
+      return;
+    }
+    List<dynamic> list = data as List;
+    CommonUtils.log("whilelist  " + list.length.toString());
+    if (list.length == 0) {
+      CommonUtils.log("whilelist  list.length=0");
+      return;
+    }
+    whilelist(list[0]);
   }
 
   @override
@@ -73,8 +128,7 @@ class _StatefulWidgetState extends State<FileList2> {
       floatingActionButton: IconButton(
           icon: Icon(Icons.search),
           onPressed: () {
-            _incrementCounter();
-            CommonUtils.log("_counter" + _counter.toString());
+            CommonUtils.log("_counter");
           }),
       body: ListView.builder(
         itemCount: show.length,
@@ -83,56 +137,5 @@ class _StatefulWidgetState extends State<FileList2> {
         ),
       ),
     );
-  }
-
-  localPath() async {
-    try {
-      var tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-
-      String appDocPath = appDocDir.path;
-      show.add('临时目录: ' + tempPath);
-      show.add('文档目录: ' + appDocPath);
-      print('临时目录: ' + tempPath);
-      print('文档目录: ' + appDocPath);
-      var all = await getExternalStorageDirectory();
-      print('sd: ' + all.path);
-      show.add('外部目录: ' + all.path);
-      setState(() {});
-    } catch (err) {
-      print(err);
-    }
-  }
-
-  int _counter = 0;
-
-  Future<File> _getLocalFile() async {
-    // 获取应用目录
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    CommonUtils.log("dir--------------" + dir);
-
-    return new File('$dir/counter.txt');
-  }
-
-  Future<int> _readCounter() async {
-    try {
-      File file = await _getLocalFile();
-      // 读取点击次数（以字符串）
-      String contents = await file.readAsString();
-      CommonUtils.log("contents--------------" + contents);
-      return int.parse(contents);
-    } on FileSystemException {
-      return 0;
-    }
-  }
-
-  Future<Null> _incrementCounter() async {
-    setState(() {
-      _counter++;
-      title = "FileList" + _counter.toString();
-    });
-    // 将点击次数以字符串类型写到文件中
-    await (await _getLocalFile()).writeAsString('$_counter');
   }
 }

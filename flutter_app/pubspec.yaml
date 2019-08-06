@@ -27,6 +27,15 @@ dependencies:
 
   # 文件操作
   path_provider: ^1.1.2
+
+  # 数据库操作
+  sqflite: ^1.1.6
+  
+  shared_preferences: ^0.5.3+4
+
+  # 汉字转拼音 用于列名中文处理
+  lpinyin: ^1.0.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

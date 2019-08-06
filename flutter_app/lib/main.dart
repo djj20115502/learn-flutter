@@ -1,5 +1,11 @@
+import 'dart:isolate';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/file/read.dart';
+import 'package:flutter_app/sqflite/db.dart';
+import 'package:flutter_app/sqflite/excel.dart';
+import 'package:flutter_app/sqflite/sharepf.dart';
 import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/navgater.dart';
 import 'package:flutter_app/step2/keeplive.dart' as keeplive;
@@ -8,6 +14,7 @@ import 'package:flutter_app/step2/searchbar.dart';
 import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
+import 'learn/isolate.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -27,24 +34,13 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 }
 
 void main() {
-  
   runApp(MyApp());
-  print('main E');
-  foo();
-  print("main X");
-}
-foo() async {
-  print('foo E');
-  String value = await bar();
-  print('foo X $value');
+  // TestIsolate.testIsolate();
+  // new Db().initDb();
+  // TestSF().test();
+  // Excel.test();
 }
 
-bar() async {
-  print("bar E");
-  return "hello";
-}
-
- 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   StatelessElement a;
@@ -56,6 +52,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
       ),
+      debugShowCheckedModeBanner: false,
       home: MyHomePage(title: 'Just test'),
       routes: Router.routes,
     );
@@ -91,7 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "ListLayout",
           onPress: () =>
               Navigator.of(context).pushNamed(Router.R_ListLayoutTestRoute)),
-              
       ItemBean(
           title: "GridRoute",
           onPress: () => Navigator.of(context).pushNamed(Router.R_GridRoute)),
@@ -126,6 +122,12 @@ class _MyHomePageState extends State<MyHomePage> {
           onPress: () {
             Navigator.push(context, CustomRoute(FileList2()));
           }),
+      ItemBean(
+          title: "读数据库",
+          message: "读取所有的数据库",
+          onPress: () {
+            Navigator.push(context, CustomRoute(Read()));
+          }),
     ];
     return Scaffold(
         appBar: AppBar(
@@ -133,12 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
           actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  showSearch(
-                      context: context, delegate: _searchBarDelegate(shows));
-                })
+            Tooltip(
+                message: "根据名称收索",
+                child: IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(
+                          context: context,
+                          delegate: _searchBarDelegate(shows));
+                    }))
           ],
         ),
         body: GridView(
@@ -170,6 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class NewRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    test();
     var args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
@@ -188,6 +194,13 @@ class NewRoute extends StatelessWidget {
       ),
     );
   }
+
+  test() {
+    String s = "s";
+    CommonUtils.log2(["initState", "s".hashCode, s.hashCode]);
+    s = "sdfdsf";
+    CommonUtils.log2(["initState", "sdfdsf".hashCode, s.hashCode]);
+  }
 }
 
 class RandomWordsWidget extends StatelessWidget {
@@ -204,8 +217,9 @@ class RandomWordsWidget extends StatelessWidget {
 
 class ItemBean {
   String title;
+  String message;
   VoidCallback onPress;
-  ItemBean({this.title, this.onPress});
+  ItemBean({this.title, this.onPress, this.message});
 }
 
 class _searchBarDelegate extends SearchDelegate<String> {
