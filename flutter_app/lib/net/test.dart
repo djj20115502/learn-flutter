@@ -1,41 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
-import '../test.dart';
-
-main() async {
-  try {
-    getHttp();
-  } catch (e) {
-    CommonUtils.log2([e]);
-  }
-}
-
-Future<String> getHttp() async {
-  try {
-    Response response;
-    var data = {'name': '技术胖'};
-    response = await Dio().get(
-      "https://www.easy-mock.com/mock/5c60131a4bed3a6342711498/baixing/dabaojian?name=大胸美女",
-      //  queryParameters:data
-    );
-    return response.toString();
-  } catch (e) {
-    return e.toString();
-  }
-}
-
-Future<String> post() async {
-  try {
-    Response response;
-    var data = {'vehicle_type': "car"};
-    response = await Dio()
-        .post("http://car1.i.cacf.cn/car/factory/lists", queryParameters: data);
-    return response.toString().substring(0,200);
-  } catch (e) {
-    return e.toString();
-  }
-}
+import 'package:flutter_app/net/dioHelper.dart';
 
 class NetShowView extends StatefulWidget {
   @override
@@ -50,10 +15,16 @@ class _Nstate extends State<NetShowView> {
   @override
   void initState() {
     super.initState();
-
-    post().then((m) => setState(() {
-          showANS = m;
-        }));
+    // DioHelper.getInstance()
+    //     .post("car/factory/lists", null)
+    //     .then((m) => setState(() {
+    //           showANS = m;
+    //         }));
+    DioHelper.getInstance()
+        .post("user/homepage/userTop", null)
+        .then((m) => setState(() {
+              showANS = m;
+            }));
   }
 
   @override
@@ -66,7 +37,7 @@ class _Nstate extends State<NetShowView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(showANS),
+            Text(showANS, maxLines: 6, overflow: TextOverflow.ellipsis),
           ],
         ),
       ),
