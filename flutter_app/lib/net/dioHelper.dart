@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_app/test.dart';
@@ -15,6 +16,8 @@ class DioHelper {
   ///    headers: {HttpHeaders.userAgentHeader: 'dio', 'common-header': 'xx'},
   ///   ))
   ///
+  final String proxy = "192.168.0.191:8888";
+  bool isProxyChecked = true;
 
   Dio getDio() {
     if (dio != null) {
@@ -38,6 +41,18 @@ class DioHelper {
       CommonUtils.log2(["DioHelper   uri----------------", options.uri]);
       return options;
     }));
+    if (isProxyChecked) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return isProxyChecked && Platform.isAndroid;
+        };
+        client.findProxy = (url) {
+          return 'PROXY $proxy';
+        };
+      };
+    }
     return dio;
   }
 

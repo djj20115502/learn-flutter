@@ -27,6 +27,14 @@ class _Nstate extends State<NetShowView> {
             }));
   }
 
+  void getData() {
+    DioHelper.getInstance()
+        .post("user/homepage/userTop", null)
+        .then((m) => setState(() {
+              showANS = m;
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +45,11 @@ class _Nstate extends State<NetShowView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            RaisedButton(
+                child: Text("网络请求"),
+                onPressed: () {
+                  getData();
+                }),
             Text(showANS, maxLines: 6, overflow: TextOverflow.ellipsis),
           ],
         ),
