@@ -12,27 +12,18 @@ class NetShowView extends StatefulWidget {
 class _Nstate extends State<NetShowView> {
   String showANS = "结果回显";
 
-  @override
-  void initState() {
-    super.initState();
-    // DioHelper.getInstance()
-    //     .post("car/factory/lists", null)
-    //     .then((m) => setState(() {
-    //           showANS = m;
-    //         }));
-    DioHelper.getInstance()
-        .post("user/homepage/userTop", null)
-        .then((m) => setState(() {
-              showANS = m;
-            }));
-  }
-
-  void getData() {
-    DioHelper.getInstance()
-        .post("user/homepage/userTop", null)
-        .then((m) => setState(() {
-              showANS = m;
-            }));
+  void getData(bool ispost) {
+    ispost
+        ? DioHelper.getInstance()
+            .postDo("user/homepage/userTop", {'user_id': "183266"}).then(
+                (m) => setState(() {
+                      showANS = m;
+                    }))
+        : DioHelper.getInstance()
+            .getDo("user/homepage/userTop", {'user_id': "183266"}).then(
+                (m) => setState(() {
+                      showANS = m;
+                    }));
   }
 
   @override
@@ -46,9 +37,14 @@ class _Nstate extends State<NetShowView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-                child: Text("网络请求"),
+                child: Text("get网络请求"),
                 onPressed: () {
-                  getData();
+                  getData(false);
+                }),
+            RaisedButton(
+                child: Text("post网络请求"),
+                onPressed: () {
+                  getData(true);
                 }),
             Text(showANS, maxLines: 6, overflow: TextOverflow.ellipsis),
           ],

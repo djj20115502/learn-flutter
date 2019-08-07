@@ -26,10 +26,18 @@ class DioHelper {
     dio = Dio(
         BaseOptions(baseUrl: KCWC, connectTimeout: 5000, receiveTimeout: 5000));
     dio.interceptors.add(new InterceptorsWrapper(onRequest: (options) {
-      // options.queryParameters.addAll({'vehicle_type': "car"});
-      options.queryParameters
-          .addAll({'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw"});
-      options.queryParameters.addAll({'user_id': "183266"});
+      if ("GET" == options.method) {
+        options.queryParameters
+            .addAll({'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw"});
+      } else {
+        if (options.data == null) {
+          options.data = new Map<String, dynamic>();
+        }
+        if (options.data is Map) {
+          (options.data as Map<String, dynamic>)
+              .addAll({'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw"});
+        }
+      }
       // options.data = {'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw",'user_id': "183266"};
       // "http://car1.i.cacf.cn/user/homepage/userTop?token=nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw&user_id=183266&longitude=106.493483&latitude=29.525769&machine_type=android"
       CommonUtils.log2(["DioHelper   method-------------", options.method]);
@@ -39,6 +47,7 @@ class DioHelper {
       CommonUtils.log2(["DioHelper   data---------------", options.data]);
       CommonUtils.log2(["DioHelper   extra---------------", options.extra]);
       CommonUtils.log2(["DioHelper   uri----------------", options.uri]);
+
       return options;
     }));
     if (isProxyChecked) {
@@ -71,19 +80,19 @@ class DioHelper {
     _instance = null;
   }
 
-  Future<String> get(String url, Map<String, dynamic> data) async {
+  Future<String> getDo(String url, Map<String, dynamic> queryParameters) async {
     try {
-      Response response = await getDio().get(url, queryParameters: data);
+      Response response =
+          await getDio().get(url, queryParameters: queryParameters);
       return response.toString();
     } catch (e) {
       return e.toString();
     }
   }
 
-  Future<String> post(String url, Map<String, dynamic> data) async {
+  Future<String> postDo(String url, Map<String, dynamic> data) async {
     try {
-      Response response =
-          await getDio().post(url, data: {"sdf": "sdf"}, queryParameters: data);
+      Response response = await getDio().post(url, data: data);
       return response.toString();
     } catch (e) {
       return e.toString();
