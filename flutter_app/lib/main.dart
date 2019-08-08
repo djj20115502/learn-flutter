@@ -6,6 +6,7 @@ import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/keeplive.dart' as keeplive;
 import 'package:flutter_app/step2/navgater.dart';
 import 'package:flutter_app/step2/searchbar.dart';
+import 'package:flutter_app/test.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'constant.dart';

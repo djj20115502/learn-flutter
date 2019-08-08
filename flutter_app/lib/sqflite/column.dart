@@ -1,6 +1,7 @@
-import 'package:flutter_app/constant.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../test.dart';
 
 /// 中文列名与拼音对应
 /// key 拼音 value 汉字

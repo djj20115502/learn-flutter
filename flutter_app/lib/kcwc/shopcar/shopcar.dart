@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/constant.dart';
+import 'package:flutter_app/kcwc/basejson.dart';
+import 'package:flutter_app/kcwc/shopcar/shopInfo.dart';
+import 'package:flutter_app/net/dioHelper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../test.dart';
 
 class ShopCarHead extends StatefulWidget {
   @override
@@ -27,9 +31,29 @@ final TextStyle textStyle_ff7f2c_11 = TextStyle(
   color: Color(0xffff7f2c),
 );
 
-bool test = true;
+StoreInfo storeInfo;
+
+String orgName = "";
+String orgAddress = "";
 
 class _ShopCarHeadState extends State<ShopCarHead> {
+  @override
+  void initState() {
+    super.initState();
+    DioHelper.getInstance().getDo("orgshop/detail", {
+      "org_id": "100628",
+    }).then((jsonData) {
+      CommonUtils.log2(
+          ["_ShopCarHeadState", BaseJson.fromJsonString(jsonData).data]);
+      storeInfo = StoreInfo.fromJson(BaseJson.fromJsonString(jsonData).data);
+      CommonUtils.log2(["_ShopCarHeadState storeInfo", storeInfo.address]);
+      setState(() {
+        orgName = storeInfo.orgName;
+        orgAddress = storeInfo.address;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,9 +63,7 @@ class _ShopCarHeadState extends State<ShopCarHead> {
           IconButton(
               icon: Icon(Icons.save),
               onPressed: () {
-                setState(() {
-                  test = !test;
-                });
+                setState(() {});
               })
         ],
       ),
@@ -66,9 +88,9 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Offstage(
-                              offstage: test,
+                              offstage: orgName == null,
                               child: Text(
-                                CommonUtils.debugShow("",
+                                CommonUtils.debugShow(orgName,
                                     debugShow:
                                         "机构简称机构简称机构机构简称机构简称机构机构简称机构简称机构"),
                                 style: textStyle_4a4a4a_20,
@@ -77,12 +99,12 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                               ),
                             ),
                             Offstage(
-                              offstage: test,
+                              offstage: orgAddress == null,
                               child: Padding(
                                 padding: EdgeInsets.only(
                                     top: ScreenUtil.getInstance().setWidth(10)),
                                 child: Text(
-                                  CommonUtils.debugShow("",
+                                  CommonUtils.debugShow(orgAddress,
                                       debugShow:
                                           "这里是地址地址地址地址地这里是这里是地址地址地址地址地这里是地址地址地址地址地址266号这里是地址地址地址地址地址266号址266号地址地址地址地址地址266号这里是地址地址地址地址地址266号址266号"),
                                   style: textStyle_999999_12,

@@ -14,6 +14,8 @@ abstract class Test {
   }
 
   static bool justTest = true;
+  static bool debugUi = false;
+
   static int testCount = 0;
 
   static String getTestPic(int order) {
@@ -73,5 +75,12 @@ abstract class CommonUtils {
     }
 
     return stringBuffer.toString();
+  }
+
+  static String debugShow(String value, {String debugShow = ""}) {
+    if (Test.debugUi) {
+      return debugShow == null ? "" : debugShow;
+    }
+    return value;
   }
 }
