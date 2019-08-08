@@ -32,8 +32,8 @@ class _Nstate extends State<NetShowView> {
 
   gson() {
     String testString = "{\n" +
-        "    \"name\": \"John Smith\",\n" +
-        "    \"email\": \"john@example.com\"\n" +
+        "    \"name\": \"DJJTEST\",\n" +
+        "    \"email\": \"361170803@QQ.com\"\n" +
         "}";
     User s = User.fromJson(json.decode(testString));
     CommonUtils.log2([s.email, s.name]);
