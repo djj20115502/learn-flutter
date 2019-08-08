@@ -83,4 +83,24 @@ abstract class CommonUtils {
     }
     return value;
   }
+
+  static bool isNullString(String value) {
+    if (value == null) {
+      return true;
+    }
+    if ("" == value) {
+      return true;
+    }
+    if ("NULL" == value.toUpperCase()) {
+      return true;
+    }
+    return false;
+  }
+
+  static String checkNull(String value) {
+    if (value == null) {
+      return "";
+    }
+    return value;
+  }
 }

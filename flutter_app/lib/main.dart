@@ -136,7 +136,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ItemBean(
           title: "商铺店内车",
           onPress: () {
-            Navigator.push(context, CustomRoute(ShopCarHead()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return ShopCarHead();
+            }));
           }),
     ];
     return Scaffold(

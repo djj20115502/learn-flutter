@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/kcwc/basejson.dart';
 import 'package:flutter_app/kcwc/shopcar/shopInfo.dart';
+import 'package:flutter_app/kcwc/utlis.dart';
 import 'package:flutter_app/net/dioHelper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -88,7 +89,7 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Offstage(
-                              offstage: orgName == null,
+                              offstage: CommonUtils.isNullString(orgName),
                               child: Text(
                                 CommonUtils.debugShow(orgName,
                                     debugShow:
@@ -99,7 +100,7 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                               ),
                             ),
                             Offstage(
-                              offstage: orgAddress == null,
+                              offstage: CommonUtils.isNullString(orgAddress),
                               child: Padding(
                                 padding: EdgeInsets.only(
                                     top: ScreenUtil.getInstance().setWidth(10)),
@@ -122,7 +123,10 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                                   //打卡
                                   Text.rich(TextSpan(children: [
                                     TextSpan(
-                                      text: CommonUtils.debugShow("",
+                                      text: CommonUtils.debugShow(
+                                          storeInfo == null
+                                              ? "0"
+                                              : storeInfo.punchCount.toString(),
                                           debugShow: "14"),
                                       style: textStyle_ff7f2c_11,
                                     ),
@@ -138,7 +142,11 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                                             .setWidth(10)),
                                     child: Text.rich(TextSpan(children: [
                                       TextSpan(
-                                        text: CommonUtils.debugShow("",
+                                        text: CommonUtils.debugShow(
+                                            storeInfo == null
+                                                ? "0"
+                                                : storeInfo.imprintCount
+                                                    .toString(),
                                             debugShow: "14"),
                                         style: textStyle_ff7f2c_11,
                                       ),
@@ -155,7 +163,11 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                                             .setWidth(10)),
                                     child: Text.rich(TextSpan(children: [
                                       TextSpan(
-                                        text: CommonUtils.debugShow("",
+                                        text: CommonUtils.debugShow(
+                                            storeInfo == null
+                                                ? "0"
+                                                : storeInfo.commentCount
+                                                    .toString(),
                                             debugShow: "55W"),
                                         style: textStyle_ff7f2c_11,
                                       ),
@@ -174,7 +186,11 @@ class _ShopCarHeadState extends State<ShopCarHead> {
                       Expanded(
                         flex: 105,
                         child: Image.network(
-                          Test.getTestPic1(),
+                          CommonUtils.debugShow(
+                              storeInfo == null
+                                  ? "null"
+                                  : Utils.buildImgUrl(storeInfo.banner),
+                              debugShow: Test.getTestImage()),
                           fit: BoxFit.cover,
                           height: ScreenUtil.getInstance().setWidth(70),
                         ),
