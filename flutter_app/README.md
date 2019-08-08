@@ -1,4 +1,7 @@
+ 
+
 # flutter_app
+ 
 
 ## 资料网站
 
@@ -22,6 +25,16 @@ get用queryParameters参数，post用data参数。extra参数并没有什么实�
 
 2. 在head拼接的时候 [dio._transformData](https://github.com/flutterchina/dio/blob/cad527f645edb52b3927c6cfdce7e3aa30f96090/package_src/lib/src/dio.dart#L829)实际上只拼接了data的相关数据，其他的数据是并没有放到head中的。
 [dio说明](https://pub.dev/packages/dio#examples)参数也是放在data中，上面的博客应该是有错误的。
+
+## JSON解析
+
+- [中文网](https://book.flutterchina.club/chapter11/json_model.html)
+
+由于这里不支持反射，所以原本的那些框架都不能用，这个提供的方案其实都是本地自动生成相关的代码。
+
+``` flutter
+flutter packages pub run build_runner build
+```
 
 
 

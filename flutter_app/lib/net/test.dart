@@ -1,6 +1,10 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/net/dioHelper.dart';
+
+import '../test.dart';
+import 'user.dart';
 
 class NetShowView extends StatefulWidget {
   @override
@@ -26,6 +30,15 @@ class _Nstate extends State<NetShowView> {
                     }));
   }
 
+  gson() {
+    String testString = "{\n" +
+        "    \"name\": \"John Smith\",\n" +
+        "    \"email\": \"john@example.com\"\n" +
+        "}";
+    User s = User.fromJson(json.decode(testString));
+    CommonUtils.log2([s.email, s.name]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +58,11 @@ class _Nstate extends State<NetShowView> {
                 child: Text("post网络请求"),
                 onPressed: () {
                   getData(true);
+                }),
+            RaisedButton(
+                child: Text("GSON"),
+                onPressed: () {
+                  gson();
                 }),
             Text(showANS, maxLines: 6, overflow: TextOverflow.ellipsis),
           ],
