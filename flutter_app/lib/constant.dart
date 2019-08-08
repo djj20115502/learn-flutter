@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/test.dart' as prefix0;
 
 import 'learn/buttons.dart';
 import 'learn/grid.dart';
@@ -114,5 +115,12 @@ abstract class CommonUtils {
     }
 
     return stringBuffer.toString();
+  }
+
+  static String debugShow(String value, {String debugShow=""}) {
+    if (Test.justTest) {
+      return debugShow == null ? "" : debugShow;
+    }
+    return value;
   }
 }
