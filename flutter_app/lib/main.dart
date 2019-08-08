@@ -6,10 +6,12 @@ import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/keeplive.dart' as keeplive;
 import 'package:flutter_app/step2/navgater.dart';
 import 'package:flutter_app/step2/searchbar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
+import 'kcwc/shopcar/shopcar.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -66,6 +68,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil(width: 375)..init(context);
+
     List<ItemBean> shows = [
       ItemBean(
           title: "导航到新路由",
@@ -127,6 +131,11 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "网络访问",
           onPress: () {
             Navigator.push(context, CustomRoute(NetShowView()));
+          }),
+      ItemBean(
+          title: "商铺店内车",
+          onPress: () {
+            Navigator.push(context, CustomRoute(ShopCarHead()));
           }),
     ];
     return Scaffold(
