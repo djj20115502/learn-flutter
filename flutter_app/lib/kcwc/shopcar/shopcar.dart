@@ -64,6 +64,68 @@ class _ShopCarHeadState extends State<ShopCarHead> {
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text("店内车"),
+    //     actions: <Widget>[
+    //       IconButton(
+    //           icon: Icon(Icons.save),
+    //           onPressed: () {
+    //             setState(() {});
+    //           })
+    //     ],
+    //   ),
+    //   body: CustomScrollView(
+    //     slivers: <Widget>[
+    //       SliverAppBar(
+    //         automaticallyImplyLeading: false,
+    //         pinned: true,
+    //         floating: true,
+    //         snap: true,
+    //         expandedHeight: 250.0,
+    //         flexibleSpace: ShopCarHeadView(storeInfo: storeInfo),
+    //       ),
+    //       SliverToBoxAdapter(
+    //         child: ShopCarHeadView(storeInfo: storeInfo),
+    //       ),
+    //       SliverToBoxAdapter(
+    //         child: Container(
+    //           padding: EdgeInsets.only(
+    //             top: ScreenUtil.getInstance().setWidth(45),
+    //             left: ScreenUtil.getInstance().setWidth(15),
+    //           ),
+    //           child: Text(
+    //             "店内车",
+    //             style: Res.textStyle_4a4a4a_20_bold,
+    //           ),
+    //         ),
+    //       ),
+    //       SliverPadding(
+    //         padding: EdgeInsets.fromLTRB(
+    //           ScreenUtil.getInstance().setWidth(15),
+    //           ScreenUtil.getInstance().setWidth(20),
+    //           ScreenUtil.getInstance().setWidth(15),
+    //           ScreenUtil.getInstance().setWidth(20),
+    //         ),
+    //         sliver: SliverGrid(
+    //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //             crossAxisCount: 2,
+    //             crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
+    //             mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
+    //             childAspectRatio: 169 / 200,
+    //           ),
+    //           delegate: SliverChildBuilderDelegate(
+    //             (BuildContext context, int index) {
+    //               return ShopCarItem(shopStoreCarItem: showCarList[index]);
+    //             },
+    //             childCount: showCarList.length,
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
+
     return Scaffold(
       appBar: AppBar(
         title: Text("店内车"),
@@ -75,48 +137,52 @@ class _ShopCarHeadState extends State<ShopCarHead> {
               })
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            color: Color(0x33ff5472),
-            child: ShopCarHeadView(storeInfo: storeInfo),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, s) => <Widget>[
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            pinned: true,
+            floating: true,
+            snap: true,
+            flexibleSpace: ShopCarHeadView(storeInfo: storeInfo),
           ),
-          Container(
-            padding: EdgeInsets.only(
-              top: ScreenUtil.getInstance().setWidth(45),
-              left: ScreenUtil.getInstance().setWidth(15),
-            ),
-            child: Text(
-              "店内车",
-              style: Res.textStyle_4a4a4a_20_bold,
-            ),
-          ),
-          Flexible(
+          SliverToBoxAdapter(
             child: Container(
-              padding: EdgeInsets.fromLTRB(
-                ScreenUtil.getInstance().setWidth(15),
-                ScreenUtil.getInstance().setWidth(20),
-                ScreenUtil.getInstance().setWidth(15),
-                ScreenUtil.getInstance().setWidth(20),
+              padding: EdgeInsets.only(
+                top: ScreenUtil.getInstance().setWidth(45),
+                left: ScreenUtil.getInstance().setWidth(15),
               ),
-              child: GridView(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
-                  mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
-                  childAspectRatio: 169 / 200,
-                ),
-                children: List<Widget>.generate(
-                  showCarList.length,
-                  (i) => ShopCarItem(
-                    shopStoreCarItem: showCarList[i],
-                  ),
-                ),
+              child: Text(
+                "店内车",
+                style: Res.textStyle_4a4a4a_20_bold,
+              ),
+            ),
+          )
+        ],
+        body: Flexible(
+          child: SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              ScreenUtil.getInstance().setWidth(15),
+              ScreenUtil.getInstance().setWidth(20),
+              ScreenUtil.getInstance().setWidth(15),
+              ScreenUtil.getInstance().setWidth(20),
+            ),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
+                mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
+                childAspectRatio: 169 / 200,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return ShopCarItem(shopStoreCarItem: showCarList[index]);
+                },
+                childCount: showCarList.length,
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
