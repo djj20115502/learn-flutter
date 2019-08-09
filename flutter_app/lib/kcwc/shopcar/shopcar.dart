@@ -54,9 +54,9 @@ class _ShopCarHeadState extends State<ShopCarHead> {
         "store/car/existlist",
         BaseJson.fromJsonString(jsonData).data,
       ]);
-      shopStoreCarList =
-          ShopStoreCarList.fromJson(BaseJson.fromJsonString(jsonData).data);
       setState(() {
+        shopStoreCarList =
+            ShopStoreCarList.fromJson(BaseJson.fromJsonString(jsonData).data);
         showCarList.addAll(shopStoreCarList.list);
       });
     });
@@ -78,7 +78,10 @@ class _ShopCarHeadState extends State<ShopCarHead> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ShopCarHeadView(storeInfo: storeInfo),
+          Container(
+            color: Color(0x33ff5472),
+            child: ShopCarHeadView(storeInfo: storeInfo),
+          ),
           Container(
             padding: EdgeInsets.only(
               top: ScreenUtil.getInstance().setWidth(45),

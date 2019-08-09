@@ -11,6 +11,7 @@ class ShopCarItem extends StatelessWidget {
   ShopCarItem({Key key, this.shopStoreCarItem}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    CommonUtils.log2(["ShopCarItem build ", hashCode]);
     String title = CommonUtils.addDiv(
       shopStoreCarItem?.seriesName,
       shopStoreCarItem?.carName,

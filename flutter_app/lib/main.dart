@@ -13,6 +13,7 @@ import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
 import 'kcwc/shopcar/shopcar.dart';
+import 'kcwc/sliverDemoPage.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -140,6 +141,14 @@ class _MyHomePageState extends State<MyHomePage> {
               return ShopCarHead();
             }));
           }),
+      ItemBean(
+          title: "nest",
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return SliverDemoPage();
+            }));
+          }),
+          
     ];
     return Scaffold(
         appBar: AppBar(
