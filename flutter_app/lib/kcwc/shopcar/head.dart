@@ -43,7 +43,7 @@ class ShopCarHeadView extends StatelessWidget {
                       child: Text(
                         CommonUtils.debugShow(orgName,
                             debugShow: "机构简称机构简称机构机构简称机构简称机构机构简称机构简称机构"),
-                        style: Res.textStyle_4a4a4a_20,
+                        style: Res.textStyle_4a4a4a_20_bold,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

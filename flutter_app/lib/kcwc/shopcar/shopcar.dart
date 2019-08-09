@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/kcwc/basejson.dart';
+import 'package:flutter_app/kcwc/commonres.dart';
 import 'package:flutter_app/kcwc/shopcar/head.dart';
 import 'package:flutter_app/kcwc/shopcar/shopInfo.dart';
+import 'package:flutter_app/kcwc/shopcar/shopcaritem.dart';
 import 'package:flutter_app/net/dioHelper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../test.dart';
 
@@ -43,11 +46,41 @@ class _ShopCarHeadState extends State<ShopCarHead> {
               })
         ],
       ),
-      body: Stack(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-              color: Color(0x33ff5472),
-              child: ShopCarHeadView(storeInfo: storeInfo))
+            color: Color(0x33ff5472),
+            child: ShopCarHeadView(storeInfo: storeInfo),
+          ),
+          Container(
+            padding: EdgeInsets.only(
+              top: ScreenUtil.getInstance().setWidth(45),
+              left: ScreenUtil.getInstance().setWidth(15),
+            ),
+            child: Text(
+              "店内车",
+              style: Res.textStyle_4a4a4a_20_bold,
+            ),
+          ),
+          Flexible(
+              child: Container(
+            padding: EdgeInsets.fromLTRB(
+              ScreenUtil.getInstance().setWidth(15),
+              ScreenUtil.getInstance().setWidth(20),
+              ScreenUtil.getInstance().setWidth(15),
+              ScreenUtil.getInstance().setWidth(20),
+            ),
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
+                mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
+                childAspectRatio: 169 / 200,
+              ),
+              children: List<Widget>.generate(20, (i) => ShopCarItem()),
+            ),
+          )),
         ],
       ),
     );
