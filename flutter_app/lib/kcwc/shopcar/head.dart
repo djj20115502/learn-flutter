@@ -18,7 +18,7 @@ class ShopCarHeadView extends StatelessWidget {
     String daka = storeInfo?.punchCount.toString();
     String youji = storeInfo?.imprintCount.toString();
     String dianpin = storeInfo?.commentCount.toString();
-    String cover = storeInfo?.banner;
+    String cover = Utils.buildImgUrl(storeInfo?.banner);
 
     CommonUtils.log2(["orgName  $orgName", "orgAddress::$orgAddress "]);
 
@@ -64,7 +64,7 @@ class ShopCarHeadView extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      color: Color(0x33ff44ff),
+                      // color: Color(0x33ff44ff),
                       padding: EdgeInsets.only(
                           top: ScreenUtil.getInstance().setWidth(10)),
                       child: Row(
@@ -123,10 +123,10 @@ class ShopCarHeadView extends StatelessWidget {
                 flex: 105,
                 child: Image.network(
                   CommonUtils.debugShow(
-                      CommonUtils.isNullString(cover)
-                          ? Test.getTestImage()
-                          : Utils.buildImgUrl(cover),
-                      debugShow: Test.getTestImage()),
+                    cover,
+                    debugShow: Test.getTestImage(),
+                    forceDug: true,
+                  ),
                   fit: BoxFit.cover,
                   height: ScreenUtil.getInstance().setWidth(70),
                 ),

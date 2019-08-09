@@ -19,3 +19,23 @@ class BaseJson {
     data = jsonMap['data'];
   }
 }
+
+
+class Pagination {
+  int count;
+  int page;
+
+  Pagination({this.count, this.page});
+
+  Pagination.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    page = json['page'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['count'] = this.count;
+    data['page'] = this.page;
+    return data;
+  }
+}

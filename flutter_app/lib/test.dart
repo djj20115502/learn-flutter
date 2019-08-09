@@ -77,11 +77,18 @@ abstract class CommonUtils {
     return stringBuffer.toString();
   }
 
-  static String debugShow(String value, {String debugShow = ""}) {
-    if (Test.debugUi) {
-      return debugShow == null ? "" : debugShow;
+  static String debugShow(String value,
+      {String nullString, String debugShow = "", bool forceDug = false}) {
+    if (!isNullString(value)) {
+      return value;
     }
-    return value == null ? "" : value;
+    if (!isNullString(nullString)) {
+      return nullString;
+    }
+    if ((forceDug | Test.debugUi) && !isNullString(debugShow)) {
+      return debugShow;
+    }
+    return "";
   }
 
   static bool isNullString(String value) {
@@ -97,10 +104,17 @@ abstract class CommonUtils {
     return false;
   }
 
-  static String checkNull(String value,{String nullString=""}) {
+  static String checkNull(String value, {String nullString = ""}) {
     if (value == null) {
       return nullString;
     }
     return value;
+  }
+
+  static String addDiv(String s1, String s2, {String div = ""}) {
+    if (!isNullString(s1) && !isNullString(s2)) {
+      return s1 + div + s2;
+    }
+    return checkNull(s1) + checkNull(s2);
   }
 }
