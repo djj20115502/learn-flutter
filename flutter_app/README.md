@@ -64,3 +64,9 @@ flutter packages pub run build_runner build
 直接用工具生成需要的代码，不必转几次。这里唯一不友好的是，这样不能用@JsonKey这种关键字，来起别名，但是这样无伤大雅。要别名手动改就行。而且，实际运用中并没有多少次用到了别名。
 
 [工具网站](https://javiercbk.github.io/json_to_dart/)
+
+#### 1. 由于无法泛型实例化，这里要手动解析下基类数据
+
+只能将具体的数据放在data中，当string处理，然后进一步的解析json。[参考](./lib/kcwc/basejson.dart)
+
+#### 2. 复杂的数据结构这个工具网站无法处理，也是需要自己去添加

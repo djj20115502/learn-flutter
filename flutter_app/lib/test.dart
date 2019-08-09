@@ -81,7 +81,7 @@ abstract class CommonUtils {
     if (Test.debugUi) {
       return debugShow == null ? "" : debugShow;
     }
-    return value;
+    return value == null ? "" : value;
   }
 
   static bool isNullString(String value) {
@@ -97,9 +97,9 @@ abstract class CommonUtils {
     return false;
   }
 
-  static String checkNull(String value) {
+  static String checkNull(String value,{String nullString=""}) {
     if (value == null) {
-      return "";
+      return nullString;
     }
     return value;
   }

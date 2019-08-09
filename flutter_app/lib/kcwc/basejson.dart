@@ -18,6 +18,4 @@ class BaseJson {
     msg = jsonMap['msg'];
     data = jsonMap['data'];
   }
-
-  
 }
