@@ -148,48 +148,49 @@ class _MyHomePageState extends State<MyHomePage> {
               return SliverDemoPage();
             }));
           }),
-          
     ];
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-          actions: <Widget>[
-            Tooltip(
-                message: "根据名称收索",
-                child: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      showSearch(
-                          context: context,
-                          delegate: _searchBarDelegate(shows));
-                    }))
-          ],
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+        actions: <Widget>[
+          Tooltip(
+              message: "根据名称收索",
+              child: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    showSearch(
+                        context: context, delegate: _searchBarDelegate(shows));
+                  }))
+        ],
+      ),
+      body: GridView(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 20,
+
+          ///横轴间距
+          mainAxisSpacing: 20,
+
+          ///纵轴间距
+          // childAspectRatio:1 ,///宽高比
         ),
-        body: GridView(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 20,
-
-              ///横轴间距
-              mainAxisSpacing: 20,
-
-              ///纵轴间距
-              // childAspectRatio:1 ,///宽高比
-            ),
-            children: List<Widget>.generate(
-                shows.length,
-                (i) => RaisedButton(
-                      color: Colors.blue,
-                      highlightColor: Colors.blue[700],
-                      colorBrightness: Brightness.dark,
-                      splashColor: Colors.grey,
-                      child: Text(shows[i].title),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      onPressed: shows[i].onPress,
-                    ))));
+        children: List<Widget>.generate(
+          shows.length,
+          (i) => RaisedButton(
+            color: Colors.blue,
+            highlightColor: Colors.blue[700],
+            colorBrightness: Brightness.dark,
+            splashColor: Colors.grey,
+            child: Text(shows[i].title),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            onPressed: shows[i].onPress,
+          ),
+        ),
+      ),
+    );
   }
 }
 
