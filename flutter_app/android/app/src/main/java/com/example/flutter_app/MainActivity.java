@@ -30,13 +30,22 @@ public class MainActivity extends FlutterActivity {
                 + Thread.currentThread().getName()
                 + Thread.currentThread().getId());
         GeneratedPluginRegistrant.registerWith(this);
-
         new MethodChannel(getFlutterView(), InvokeFactory.CHANNEL).setMethodCallHandler(this::onMethodCall);
     }
 
     @SuppressLint("CheckResult")
     private void onMethodCall(MethodCall call, MethodChannel.Result result) {
-
+//        Iivoke.Ans o=  InvokeFactory.onMethodCall(MainActivity.this, call);
+//        switch (o.code) {
+//            case -1:
+//                result.notImplemented();
+//                break;
+//            case 0:
+//                result.error("", "", "");
+//                break;
+//            case 1:
+//                result.success(o.data);
+//        }
         Disposable disposable = Observable.create(
                 (ObservableEmitter<Iivoke.Ans> emitter) -> {
                     Log.e("FlutterActivity", "ObservableEmitter"

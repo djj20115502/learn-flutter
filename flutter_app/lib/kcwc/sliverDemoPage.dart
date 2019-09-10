@@ -1,9 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_app/test.dart';
 
 class SliverDemoPage extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
+    // Element
+    CommonUtils.log2([context.runtimeType]);
+  
+// Element
     List<String> _tabs = ["1", "2"];
     return Scaffold(
       appBar: AppBar(

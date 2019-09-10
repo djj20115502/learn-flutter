@@ -42,6 +42,7 @@ class _ShopCarHeadState extends State<ShopCarHead> {
       ]);
       setState(() {
         storeInfo = StoreInfo.fromJson(BaseJson.fromJsonString(jsonData).data);
+        CommonUtils.log2(["storeInfo", storeInfo.address]);
       });
     });
 
@@ -58,6 +59,7 @@ class _ShopCarHeadState extends State<ShopCarHead> {
         shopStoreCarList =
             ShopStoreCarList.fromJson(BaseJson.fromJsonString(jsonData).data);
         showCarList.addAll(shopStoreCarList.list);
+        CommonUtils.log2(["showCarList", showCarList.length]);
       });
     });
   }
@@ -125,7 +127,9 @@ class _ShopCarHeadState extends State<ShopCarHead> {
     //     ],
     //   ),
     // );
-
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+      CommonUtils.log("addPostFrameCallback");
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text("店内车"),
@@ -139,28 +143,18 @@ class _ShopCarHeadState extends State<ShopCarHead> {
       ),
       body: NestedScrollView(
         headerSliverBuilder: (context, s) => <Widget>[
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            pinned: true,
-            floating: true,
-            snap: true,
-            flexibleSpace: ShopCarHeadView(storeInfo: storeInfo),
-          ),
           SliverToBoxAdapter(
-            child: Container(
-              padding: EdgeInsets.only(
-                top: ScreenUtil.getInstance().setWidth(45),
-                left: ScreenUtil.getInstance().setWidth(15),
-              ),
-              child: Text(
-                "店内车",
-                style: Res.textStyle_4a4a4a_20_bold,
-              ),
+            child: ShopCarHeadView(storeInfo: storeInfo),
+          ),
+          SliverSafeArea(
+            sliver: SliverPersistentHeader(
+              pinned: true,
+              delegate: MySliverPersistentHeaderDelegate(),
             ),
-          )
+          ),
         ],
-        body: Flexible(
-          child: SliverPadding(
+        body: CustomScrollView(slivers: <Widget>[
+          SliverPadding(
             padding: EdgeInsets.fromLTRB(
               ScreenUtil.getInstance().setWidth(15),
               ScreenUtil.getInstance().setWidth(20),
@@ -182,8 +176,55 @@ class _ShopCarHeadState extends State<ShopCarHead> {
               ),
             ),
           ),
-        ),
+        ]),
       ),
     );
+  }
+}
+
+class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  GlobalKey globalKey = GlobalKey();
+  double height = 100;
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    CommonUtils.log2(["height", height]);
+    return Container(
+      key: globalKey,
+      color: Res.color_white,
+      padding: EdgeInsets.only(
+        top: ScreenUtil.getInstance().setWidth(45),
+        left: ScreenUtil.getInstance().setWidth(15),
+      ),
+      child: Text(
+        "店内车",
+        style: Res.textStyle_4a4a4a_20_bold,
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 180.0;
+
+  @override
+  double get minExtent => 60.0;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    CommonUtils.log2(["height shouldRebuild", height]);
+    if (globalKey.currentContext == null) {
+      CommonUtils.log2(
+          ["height shouldRebuild globalKey.currentContext==null", height]);
+      return true;
+    }
+    if (globalKey.currentContext == null) {
+      CommonUtils.log2(
+          ["height shouldRebuild globalKey.currentContext==null", height]);
+    }
+    CommonUtils.log2(["height shouldRebuild", height]);
+
+    CommonUtils.log2(["height shouldRebuild", height]);
+
+    return false;
   }
 }

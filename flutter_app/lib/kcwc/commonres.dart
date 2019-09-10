@@ -35,6 +35,7 @@ abstract class Res {
   static const Color color_red = Color(0XFFff0000);
   static const Color color_green = Color(0XFF00ff00);
   static const Color color_bulue = Color(0XFF0000ff);
+  static const Color color_white = Color(0XFFffffff);
 
   static Color getColor() {
     Test.testCount++;

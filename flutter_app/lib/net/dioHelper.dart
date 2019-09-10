@@ -17,7 +17,7 @@ class DioHelper {
   ///   ))
   ///
   final String proxy = "192.168.0.191:8888";
-  bool isProxyChecked = true;
+  bool isProxyChecked = false;
 
   Dio getDio() {
     if (dio != null) {

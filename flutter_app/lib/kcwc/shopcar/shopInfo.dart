@@ -10,7 +10,7 @@ class StoreInfo {
   String banner;
   String orgName;
   String orgFullName;
-  int orgScore;
+  String orgScore;
   int serviceScore;
   String tel;
   String points;
