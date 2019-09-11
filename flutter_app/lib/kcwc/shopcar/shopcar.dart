@@ -64,72 +64,21 @@ class _ShopCarHeadState extends State<ShopCarHead> {
     });
   }
 
+  static int count = 1;
+
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text("店内车"),
-    //     actions: <Widget>[
-    //       IconButton(
-    //           icon: Icon(Icons.save),
-    //           onPressed: () {
-    //             setState(() {});
-    //           })
-    //     ],
-    //   ),
-    //   body: CustomScrollView(
-    //     slivers: <Widget>[
-    //       SliverAppBar(
-    //         automaticallyImplyLeading: false,
-    //         pinned: true,
-    //         floating: true,
-    //         snap: true,
-    //         expandedHeight: 250.0,
-    //         flexibleSpace: ShopCarHeadView(storeInfo: storeInfo),
-    //       ),
-    //       SliverToBoxAdapter(
-    //         child: ShopCarHeadView(storeInfo: storeInfo),
-    //       ),
-    //       SliverToBoxAdapter(
-    //         child: Container(
-    //           padding: EdgeInsets.only(
-    //             top: ScreenUtil.getInstance().setWidth(45),
-    //             left: ScreenUtil.getInstance().setWidth(15),
-    //           ),
-    //           child: Text(
-    //             "店内车",
-    //             style: Res.textStyle_4a4a4a_20_bold,
-    //           ),
-    //         ),
-    //       ),
-    //       SliverPadding(
-    //         padding: EdgeInsets.fromLTRB(
-    //           ScreenUtil.getInstance().setWidth(15),
-    //           ScreenUtil.getInstance().setWidth(20),
-    //           ScreenUtil.getInstance().setWidth(15),
-    //           ScreenUtil.getInstance().setWidth(20),
-    //         ),
-    //         sliver: SliverGrid(
-    //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //             crossAxisCount: 2,
-    //             crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
-    //             mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
-    //             childAspectRatio: 169 / 200,
-    //           ),
-    //           delegate: SliverChildBuilderDelegate(
-    //             (BuildContext context, int index) {
-    //               return ShopCarItem(shopStoreCarItem: showCarList[index]);
-    //             },
-    //             childCount: showCarList.length,
-    //           ),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
-      CommonUtils.log("addPostFrameCallback");
-    });
+    count = 2;
+    if (count % 2 == 1) {
+      CommonUtils.log2(["showCarList", "getNestedScrollView"]);
+      return getNestedScrollView(context);
+    } else {
+      CommonUtils.log2(["showCarList", "getSliver"]);
+      return getSliver(context);
+    }
+  }
+
+  Widget getNestedScrollView(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("店内车"),
@@ -180,21 +129,70 @@ class _ShopCarHeadState extends State<ShopCarHead> {
       ),
     );
   }
+
+  Widget getSliver(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("店内车"),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                setState(() {});
+              })
+        ],
+      ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: ShopCarHeadView(storeInfo: storeInfo),
+          ),
+          SliverPersistentHeader(
+            delegate: MySliverPersistentHeaderDelegate(),
+            floating: true,
+            pinned: true,
+          ),
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              ScreenUtil.getInstance().setWidth(15),
+              0,
+              ScreenUtil.getInstance().setWidth(15),
+              ScreenUtil.getInstance().setWidth(20),
+            ),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
+                mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
+                childAspectRatio: 169 / 200,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return ShopCarItem(shopStoreCarItem: showCarList[index]);
+                },
+                childCount: showCarList.length,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   GlobalKey globalKey = GlobalKey();
-  double height = 100;
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    CommonUtils.log2(["height", height]);
     return Container(
       key: globalKey,
       color: Res.color_white,
       padding: EdgeInsets.only(
         top: ScreenUtil.getInstance().setWidth(45),
         left: ScreenUtil.getInstance().setWidth(15),
+        bottom: ScreenUtil.getInstance().setWidth(20),
       ),
       child: Text(
         "店内车",
@@ -204,27 +202,19 @@ class MySliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 180.0;
+  double get maxExtent => ScreenUtil.getInstance().setWidth(90.0);
 
   @override
-  double get minExtent => 60.0;
+  double get minExtent => ScreenUtil.getInstance().setWidth(90.0);
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    CommonUtils.log2(["height shouldRebuild", height]);
-    if (globalKey.currentContext == null) {
-      CommonUtils.log2(
-          ["height shouldRebuild globalKey.currentContext==null", height]);
-      return true;
+  bool shouldRebuild(MySliverPersistentHeaderDelegate oldDelegate) {
+    if (globalKey.currentContext != null) {
+      CommonUtils.log2([
+        "height shouldRebuild globalKey.currentContext==null",
+        globalKey.currentContext.size.height
+      ]);
     }
-    if (globalKey.currentContext == null) {
-      CommonUtils.log2(
-          ["height shouldRebuild globalKey.currentContext==null", height]);
-    }
-    CommonUtils.log2(["height shouldRebuild", height]);
-
-    CommonUtils.log2(["height shouldRebuild", height]);
-
     return false;
   }
 }
