@@ -8,6 +8,7 @@ import 'package:flutter_app/kcwc/shopcar/shopcaritem.dart';
 import 'package:flutter_app/kcwc/shopcar/shopstorecardata.dart';
 import 'package:flutter_app/net/dioHelper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../test.dart';
 
@@ -46,21 +47,27 @@ class _ShopCarHeadState extends State<ShopCarHead> {
       });
     });
 
-    DioHelper.getInstance().getDo("store/car/existlist", {
+    _update();
+  }
+
+  // ignore: missing_return
+  Future<void> _update() async {
+    String jsonData =
+        await DioHelper.getInstance().getDo("store/car/existlist", {
       "pageSize": "12",
       "page": "1",
       "org_id": "100628",
-    }).then((jsonData) {
-      CommonUtils.log2([
-        "store/car/existlist",
-        BaseJson.fromJsonString(jsonData).data,
-      ]);
-      setState(() {
-        shopStoreCarList =
-            ShopStoreCarList.fromJson(BaseJson.fromJsonString(jsonData).data);
-        showCarList.addAll(shopStoreCarList.list);
-        CommonUtils.log2(["showCarList", showCarList.length]);
-      });
+    });
+    CommonUtils.log2([
+      "store/car/existlist",
+      BaseJson.fromJsonString(jsonData).data,
+    ]);
+    setState(() {
+      shopStoreCarList =
+          ShopStoreCarList.fromJson(BaseJson.fromJsonString(jsonData).data);
+      showCarList.clear();
+      showCarList.addAll(shopStoreCarList.list);
+      CommonUtils.log2(["showCarList", showCarList.length]);
     });
   }
 
@@ -68,69 +75,22 @@ class _ShopCarHeadState extends State<ShopCarHead> {
 
   @override
   Widget build(BuildContext context) {
-    count = 2;
-    if (count % 2 == 1) {
-      CommonUtils.log2(["showCarList", "getNestedScrollView"]);
-      return getNestedScrollView(context);
-    } else {
-      CommonUtils.log2(["showCarList", "getSliver"]);
-      return getSliver(context);
+    return getSliver(context);
+  }
+
+  void listener() {
+    var maxScroll = scrollController.position.maxScrollExtent;
+    var pixels = scrollController.position.pixels;
+    CommonUtils.log2(["ShopCarHead maxScroll", maxScroll, "pixels", pixels]);
+    if (maxScroll == pixels) {
+      Fluttertoast.showToast(msg: "加载更多");
     }
   }
 
-  Widget getNestedScrollView(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("店内车"),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.save),
-              onPressed: () {
-                setState(() {});
-              })
-        ],
-      ),
-      body: NestedScrollView(
-        headerSliverBuilder: (context, s) => <Widget>[
-          SliverToBoxAdapter(
-            child: ShopCarHeadView(storeInfo: storeInfo),
-          ),
-          SliverSafeArea(
-            sliver: SliverPersistentHeader(
-              pinned: true,
-              delegate: MySliverPersistentHeaderDelegate(),
-            ),
-          ),
-        ],
-        body: CustomScrollView(slivers: <Widget>[
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              ScreenUtil.getInstance().setWidth(15),
-              ScreenUtil.getInstance().setWidth(20),
-              ScreenUtil.getInstance().setWidth(15),
-              ScreenUtil.getInstance().setWidth(20),
-            ),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
-                mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
-                childAspectRatio: 169 / 200,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return ShopCarItem(shopStoreCarItem: showCarList[index]);
-                },
-                childCount: showCarList.length,
-              ),
-            ),
-          ),
-        ]),
-      ),
-    );
-  }
+  ScrollController scrollController = ScrollController();
 
   Widget getSliver(BuildContext context) {
+    scrollController.addListener(listener);
     return Scaffold(
       appBar: AppBar(
         title: Text("店内车"),
@@ -142,39 +102,44 @@ class _ShopCarHeadState extends State<ShopCarHead> {
               })
         ],
       ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: ShopCarHeadView(storeInfo: storeInfo),
-          ),
-          SliverPersistentHeader(
-            delegate: MySliverPersistentHeaderDelegate(),
-            floating: true,
-            pinned: true,
-          ),
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              ScreenUtil.getInstance().setWidth(15),
-              0,
-              ScreenUtil.getInstance().setWidth(15),
-              ScreenUtil.getInstance().setWidth(20),
+      body: RefreshIndicator(
+        onRefresh: _update,
+        displacement: ScreenUtil.getInstance().setWidth(20),
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            SliverToBoxAdapter(
+              child: ShopCarHeadView(storeInfo: storeInfo),
             ),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
-                mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
-                childAspectRatio: 169 / 200,
+            SliverPersistentHeader(
+              delegate: MySliverPersistentHeaderDelegate(),
+              floating: true,
+              pinned: true,
+            ),
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                ScreenUtil.getInstance().setWidth(15),
+                0,
+                ScreenUtil.getInstance().setWidth(15),
+                ScreenUtil.getInstance().setWidth(20),
               ),
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return ShopCarItem(shopStoreCarItem: showCarList[index]);
-                },
-                childCount: showCarList.length,
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: ScreenUtil.getInstance().setWidth(8),
+                  mainAxisSpacing: ScreenUtil.getInstance().setWidth(35),
+                  childAspectRatio: 169 / 200,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return ShopCarItem(shopStoreCarItem: showCarList[index]);
+                  },
+                  childCount: showCarList.length,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
