@@ -42,7 +42,7 @@ dependencies:
   flutter_screenutil: ^0.5.3
 
   # toast
-  fluttertoast: ^2.1.1
+ # fluttertoast: ^2.1.1
 
   #文件选择
   file_picker: ^1.4.2

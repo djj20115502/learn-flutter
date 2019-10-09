@@ -83,7 +83,7 @@ class _ShopCarHeadState extends State<ShopCarHead> {
     var pixels = scrollController.position.pixels;
     CommonUtils.log2(["ShopCarHead maxScroll", maxScroll, "pixels", pixels]);
     if (maxScroll == pixels) {
-      Fluttertoast.showToast(msg: "加载更多");
+//      Fluttertoast.showToast(msg: "加载更多");
     }
   }
 
