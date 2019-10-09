@@ -8,7 +8,6 @@ import 'package:flutter_app/kcwc/shopcar/shopcaritem.dart';
 import 'package:flutter_app/kcwc/shopcar/shopstorecardata.dart';
 import 'package:flutter_app/net/dioHelper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../test.dart';
 
