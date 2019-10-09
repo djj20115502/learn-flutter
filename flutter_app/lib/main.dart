@@ -7,6 +7,7 @@ import 'package:flutter_app/step2/keeplive.dart' as keeplive;
 import 'package:flutter_app/step2/navgater.dart';
 import 'package:flutter_app/step2/searchbar.dart';
 import 'package:flutter_app/test.dart';
+import 'package:flutter_app/utlis/toast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bloc/bloc.dart';
@@ -181,6 +182,12 @@ class _MyHomePageState extends State<MyHomePage> {
         onPress: () =>
             Navigator.push(context, CustomRoute(FilePickerDemo())),
       ),
+
+    ItemBean(
+    title: "toast",
+    onPress: () =>
+        Toast.show("Toast plugin app", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM),
+    ),
 
     ];
     return Scaffold(
