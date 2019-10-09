@@ -64,3 +64,32 @@ flutter packages pub run build_runner build
 直接用工具生成需要的代码，不必转几次。这里唯一不友好的是，这样不能用@JsonKey这种关键字，来起别名，但是这样无伤大雅。要别名手动改就行。而且，实际运用中并没有多少次用到了别名。
 
 [工具网站](https://javiercbk.github.io/json_to_dart/)
+
+#### 1. 由于无法泛型实例化，这里要手动解析下基类数据
+
+只能将具体的数据放在data中，当string处理，然后进一步的解析json。[参考](./lib/kcwc/basejson.dart)
+
+#### 2. 复杂的数据结构这个工具网站无法处理，也是需要自己去添加
+
+## UI刷新
+
+### StatelessWidget和StatefulWidget,刷新效果不同
+
+[问题博客](https://juejin.im/post/5ca2152f6fb9a05e1a7a9a26) **原因: 构建方式不同**
+
+1. **StatelessWidget** 对应的是[StatelessElement](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L3966),构建Widget的时候是直接用当前的的[该StatelessWidget来build](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L606)，也就是我们写的代码部分。
+
+``` flutter
+    Widget build() => widget.build(this);
+```
+
+2. **StatefulWidget** 对应的是[StatefulElement](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L3986),构建Widget的时候使用的是自定义的[state的build](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L4012)。由于在初始化的时候就已经构建了state,所以如果这里的更新[canUpdate](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L442)为true的时候，只设置了新的。
+
+``` flutter
+    Widget build() => state.build(this);
+```
+所以这里会出现一个问题，当Widget发生变化需要Element更新的时候，[updateChild](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L2854)的时候，StatelessWidget只要涉及到更新，都会重新去build。但是,StatefulWidget时,判断[canUpdate](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L442)为true的时候。由于调用[update](https://github.com/flutter/flutter/blob/v1.7.10/packages/flutter/lib/src/widgets/framework.dart#L2930)只涉及到更新了StatefulWidget。但是并不会更新重新生成新的state,这个时候的state还会是旧的。所有构建出来的都是之前的StatefulWidget的state。这里感觉像是个bug。
+
+解决方案就是通过添加key使得canUpdate判断为false。
+
+

@@ -1,8 +1,8 @@
-import 'package:flutter_app/constant.dart';
 import 'package:flutter_app/sqflite/column.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
+
+import '../test.dart';
 
 class TestSF {
   test() async {

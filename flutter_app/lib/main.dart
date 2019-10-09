@@ -6,10 +6,16 @@ import 'package:flutter_app/step2/custome_router.dart';
 import 'package:flutter_app/step2/keeplive.dart' as keeplive;
 import 'package:flutter_app/step2/navgater.dart';
 import 'package:flutter_app/step2/searchbar.dart';
+import 'package:flutter_app/test.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'bloc/bloc.dart';
+import 'bloc/inheritedWidget.dart';
 import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
+import 'kcwc/shopcar/shopcar.dart';
+import 'kcwc/sliverDemoPage.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -66,6 +72,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil(width: 375)..init(context);
+
     List<ItemBean> shows = [
       ItemBean(
           title: "导航到新路由",
@@ -113,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator.push(context, CustomRoute(FileList()));
           }),
       ItemBean(
-          title: "FileList2",
+          title: "读取表格FileList2",
           onPress: () {
             Navigator.push(context, CustomRoute(FileList2()));
           }),
@@ -128,47 +136,178 @@ class _MyHomePageState extends State<MyHomePage> {
           onPress: () {
             Navigator.push(context, CustomRoute(NetShowView()));
           }),
+      ItemBean(
+          title: "商铺店内车",
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return ShopCarHead();
+            }));
+          }),
+      ItemBean(
+          title: "nest",
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return SliverDemoPage();
+            }));
+          }),
+      ItemBean(
+          title: "bloc",
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return TopPage();
+            }));
+          }),
+      ItemBean(
+          title: "InheritedWidgetTestContainer",
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return InheritedWidgetTestContainer();
+            }));
+          }),
+      ItemBean(
+        title: "showDialog",
+        onPress: () => _show(context),
+      ),
+      ItemBean(
+        title: "justtest",
+        onPress: () =>
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return justtest();
+        })),
+      ),
     ];
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-          actions: <Widget>[
-            Tooltip(
-                message: "根据名称收索",
-                child: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                      showSearch(
-                          context: context,
-                          delegate: _searchBarDelegate(shows));
-                    }))
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+        actions: <Widget>[
+          Tooltip(
+              message: "根据名称收索",
+              child: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    showSearch(
+                        context: context, delegate: _searchBarDelegate(shows));
+                  }))
+        ],
+      ),
+      body: GridView(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 20,
+
+          ///横轴间距
+          mainAxisSpacing: 20,
+
+          ///纵轴间距
+          // childAspectRatio:1 ,///宽高比
+        ),
+        children: List<Widget>.generate(
+          shows.length,
+          (i) => RaisedButton(
+            color: Colors.blue,
+            highlightColor: Colors.blue[700],
+            colorBrightness: Brightness.dark,
+            splashColor: Colors.grey,
+            child: Text(shows[i].title),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            onPressed: shows[i].onPress,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+_show(BuildContext context) {
+  test222();
+  showDialog(
+// 传入 context
+    context: context,
+// 构建 Dialog 的视图
+    builder: (_) => Container(
+      color: Colors.blue,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              color: Colors.white,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: Text('Custom Dialog',
+                        style: TextStyle(
+                            fontSize: 16, decoration: TextDecoration.none)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15, bottom: 8),
+                    child: FlatButton(
+                        onPressed: () {
+// 关闭 Dialog
+                          Navigator.pop(_);
+                        },
+                        child: Text('确定')),
+                  )
+                ],
+              ),
+            )
           ],
         ),
-        body: GridView(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 20,
+      ),
+    ),
+  );
+}
 
-              ///横轴间距
-              mainAxisSpacing: 20,
+class justtest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
 
-              ///纵轴间距
-              // childAspectRatio:1 ,///宽高比
+    return Theme(
+      data: Theme.of(context, shadowThemeOnly: true),
+      child: SafeArea(
+        child: Builder(builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text('Custom Dialog',
+                            style: TextStyle(
+                                fontSize: 16, decoration: TextDecoration.none)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 15, bottom: 8),
+                        child: FlatButton(
+                            onPressed: () {
+// 关闭 Dialog
+                              Navigator.pop(context);
+                            },
+                            child: Text('确定')),
+                      )
+                    ],
+                  ),
+                )
+              ],
             ),
-            children: List<Widget>.generate(
-                shows.length,
-                (i) => RaisedButton(
-                      color: Colors.blue,
-                      highlightColor: Colors.blue[700],
-                      colorBrightness: Brightness.dark,
-                      splashColor: Colors.grey,
-                      child: Text(shows[i].title),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      onPressed: shows[i].onPress,
-                    ))));
+          );
+        }),
+      ),
+    );
   }
 }
 
@@ -219,6 +358,7 @@ class ItemBean {
   String title;
   String message;
   VoidCallback onPress;
+
   ItemBean({this.title, this.onPress, this.message});
 }
 
@@ -226,6 +366,7 @@ class _searchBarDelegate extends SearchDelegate<String> {
   final List<ItemBean> itmes;
 
   _searchBarDelegate(this.itmes);
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [

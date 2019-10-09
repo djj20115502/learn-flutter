@@ -17,7 +17,7 @@ class DioHelper {
   ///   ))
   ///
   final String proxy = "192.168.0.191:8888";
-  bool isProxyChecked = true;
+  bool isProxyChecked = false;
 
   Dio getDio() {
     if (dio != null) {
@@ -27,15 +27,19 @@ class DioHelper {
         BaseOptions(baseUrl: KCWC, connectTimeout: 5000, receiveTimeout: 5000));
     dio.interceptors.add(new InterceptorsWrapper(onRequest: (options) {
       if ("GET" == options.method) {
-        options.queryParameters
-            .addAll({'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw"});
+        options.queryParameters.addAll({
+          'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw",
+          "machine_type": "android"
+        });
       } else {
         if (options.data == null) {
           options.data = new Map<String, dynamic>();
         }
         if (options.data is Map) {
-          (options.data as Map<String, dynamic>)
-              .addAll({'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw"});
+          (options.data as Map<String, dynamic>).addAll({
+            'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw",
+            "machine_type": "android"
+          });
         }
       }
       // options.data = {'token': "nDJFF9Kc3Lcldnd6VdwrPwRts2XxDfQw",'user_id': "183266"};

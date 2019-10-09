@@ -14,6 +14,8 @@ abstract class Test {
   }
 
   static bool justTest = true;
+  static bool debugUi = false;
+
   static int testCount = 0;
 
   static String getTestPic(int order) {
@@ -73,5 +75,46 @@ abstract class CommonUtils {
     }
 
     return stringBuffer.toString();
+  }
+
+  static String debugShow(String value,
+      {String nullString, String debugShow = "", bool forceDug = false}) {
+    if (!isNullString(value)) {
+      return value;
+    }
+    if (!isNullString(nullString)) {
+      return nullString;
+    }
+    if ((forceDug | Test.debugUi) && !isNullString(debugShow)) {
+      return debugShow;
+    }
+    return "";
+  }
+
+  static bool isNullString(String value) {
+    if (value == null) {
+      return true;
+    }
+    if ("" == value) {
+      return true;
+    }
+    if ("NULL" == value.toUpperCase()) {
+      return true;
+    }
+    return false;
+  }
+
+  static String checkNull(String value, {String nullString = ""}) {
+    if (value == null) {
+      return nullString;
+    }
+    return value;
+  }
+
+  static String addDiv(String s1, String s2, {String div = ""}) {
+    if (!isNullString(s1) && !isNullString(s2)) {
+      return s1 + div + s2;
+    }
+    return checkNull(s1) + checkNull(s2);
   }
 }
