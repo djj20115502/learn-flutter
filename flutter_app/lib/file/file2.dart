@@ -24,9 +24,9 @@ class _StatefulWidgetState extends State<FileList2> {
     excel = new Excel();
     CommonUtils.log(
         "onValue1" + new DateTime.now().millisecondsSinceEpoch.toString());
-//    _getxls();
+    _getxls();
 
-     _just_test();
+//     _just_test();
   }
 
   @override

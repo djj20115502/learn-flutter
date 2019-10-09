@@ -9,6 +9,8 @@ import 'package:flutter_app/step2/searchbar.dart';
 import 'package:flutter_app/test.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'bloc/bloc.dart';
+import 'bloc/inheritedWidget.dart';
 import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
@@ -119,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator.push(context, CustomRoute(FileList()));
           }),
       ItemBean(
-          title: "FileList2",
+          title: "读取表格FileList2",
           onPress: () {
             Navigator.push(context, CustomRoute(FileList2()));
           }),
@@ -148,6 +150,31 @@ class _MyHomePageState extends State<MyHomePage> {
               return SliverDemoPage();
             }));
           }),
+      ItemBean(
+          title: "bloc",
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return TopPage();
+            }));
+          }),
+      ItemBean(
+          title: "InheritedWidgetTestContainer",
+          onPress: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return InheritedWidgetTestContainer();
+            }));
+          }),
+      ItemBean(
+        title: "showDialog",
+        onPress: () => _show(context),
+      ),
+      ItemBean(
+        title: "justtest",
+        onPress: () =>
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return justtest();
+        })),
+      ),
     ];
     return Scaffold(
       appBar: AppBar(
@@ -189,6 +216,96 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: shows[i].onPress,
           ),
         ),
+      ),
+    );
+  }
+}
+
+_show(BuildContext context) {
+  test222();
+  showDialog(
+// 传入 context
+    context: context,
+// 构建 Dialog 的视图
+    builder: (_) => Container(
+      color: Colors.blue,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              color: Colors.white,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: Text('Custom Dialog',
+                        style: TextStyle(
+                            fontSize: 16, decoration: TextDecoration.none)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 15, bottom: 8),
+                    child: FlatButton(
+                        onPressed: () {
+// 关闭 Dialog
+                          Navigator.pop(_);
+                        },
+                        child: Text('确定')),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class justtest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+
+    return Theme(
+      data: Theme.of(context, shadowThemeOnly: true),
+      child: SafeArea(
+        child: Builder(builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.white,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text('Custom Dialog',
+                            style: TextStyle(
+                                fontSize: 16, decoration: TextDecoration.none)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 15, bottom: 8),
+                        child: FlatButton(
+                            onPressed: () {
+// 关闭 Dialog
+                              Navigator.pop(context);
+                            },
+                            child: Text('确定')),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -241,6 +358,7 @@ class ItemBean {
   String title;
   String message;
   VoidCallback onPress;
+
   ItemBean({this.title, this.onPress, this.message});
 }
 
@@ -248,6 +366,7 @@ class _searchBarDelegate extends SearchDelegate<String> {
   final List<ItemBean> itmes;
 
   _searchBarDelegate(this.itmes);
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -305,5 +424,3 @@ class _searchBarDelegate extends SearchDelegate<String> {
             ));
   }
 }
-
- 

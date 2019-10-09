@@ -89,6 +89,7 @@ class _ShopCarHeadState extends State<ShopCarHead> {
 
   ScrollController scrollController = ScrollController();
 
+
   Widget getSliver(BuildContext context) {
     scrollController.addListener(listener);
     return Scaffold(
