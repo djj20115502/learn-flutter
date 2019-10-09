@@ -14,6 +14,7 @@ import 'bloc/inheritedWidget.dart';
 import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
+import 'file/filepicker.dart';
 import 'kcwc/shopcar/shopcar.dart';
 import 'kcwc/sliverDemoPage.dart';
 import 'step2/gesturedetector.dart';
@@ -172,9 +173,15 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "justtest",
         onPress: () =>
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return justtest();
-        })),
+              return justtest();
+            })),
       ),
+      ItemBean(
+        title: "FilePickerDemo",
+        onPress: () =>
+            Navigator.push(context, CustomRoute(FilePickerDemo())),
+      ),
+
     ];
     return Scaffold(
       appBar: AppBar(
