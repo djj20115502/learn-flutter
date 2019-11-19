@@ -38,6 +38,8 @@
                 <data android:scheme="http"/>
                 <data android:scheme="https"/>
                 <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.xls"/>
+                <data android:pathPattern=".*\\.xlsx"/>
 
             </intent-filter>
         </activity>

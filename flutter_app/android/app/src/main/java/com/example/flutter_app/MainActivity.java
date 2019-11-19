@@ -26,9 +26,7 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("FlutterActivity", "onMethodCall"
-                + Thread.currentThread().getName()
-                + Thread.currentThread().getId());
+        Log.e("FlutterActivity", "" + getIntent().getDataString());
         GeneratedPluginRegistrant.registerWith(this);
         new MethodChannel(getFlutterView(), InvokeFactory.CHANNEL).setMethodCallHandler(this::onMethodCall);
     }
