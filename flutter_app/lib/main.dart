@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/file/read.dart';
 import 'package:flutter_app/net/test.dart';
 import 'package:flutter_app/step2/custome_router.dart';
@@ -174,21 +177,18 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "justtest",
         onPress: () =>
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return justtest();
-            })),
+          return justtest();
+        })),
       ),
       ItemBean(
         title: "FilePickerDemo",
-        onPress: () =>
-            Navigator.push(context, CustomRoute(FilePickerDemo())),
+        onPress: () => Navigator.push(context, CustomRoute(FilePickerDemo())),
       ),
-
-    ItemBean(
-    title: "toast",
-    onPress: () =>
-        Toast.show("Toast plugin app", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM),
-    ),
-
+      ItemBean(
+        title: "toast",
+        onPress: () => Toast.show("Toast plugin app", context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+      ),
     ];
     return Scaffold(
       appBar: AppBar(
@@ -232,6 +232,37 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  StreamSubscription _subscription = null;
+
+  @override
+  void initState() {
+    if (null == _subscription) {
+      _subscription = InteractNative.dealNativeWithValue()
+          .listen(_onEvent, onError: _onError);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (_subscription != null) {
+      _subscription.cancel();
+    }
+  }
+
+  void _onEvent(Object event) {
+    Toast.show(event, context);
+    CommonUtils.log2(["_onEvent",event.toString()]);
+    if ('onConnected' == event) {
+//        DialogUtil.buildToast('已连接');
+    }
+  }
+
+  void _onError(Object error) {
+    CommonUtils.log2(["_onError",error.toString()]);
+    Toast.show(error, context);
   }
 }
 
@@ -282,7 +313,6 @@ _show(BuildContext context) {
 class justtest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Theme(
       data: Theme.of(context, shadowThemeOnly: true),
       child: SafeArea(
@@ -436,5 +466,19 @@ class _searchBarDelegate extends SearchDelegate<String> {
                   ])),
               onTap: suggestionList[index].onPress,
             ));
+  }
+}
+
+class InteractNative {
+  /* 通道名称，必须与原生注册的一致*/
+  static const native_to_flutter =
+      const EventChannel('com.bhm.flutter.flutternb.plugins/native_to_flutter');
+
+  /*
+  * 原生回调的方法（带参）
+  */
+  static Stream<dynamic> dealNativeWithValue() {
+    Stream<dynamic> stream = native_to_flutter.receiveBroadcastStream();
+    return stream;
   }
 }
