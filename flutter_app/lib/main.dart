@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,12 +13,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/inheritedWidget.dart';
+import 'channel/AndroidToFlutter.dart';
 import 'constant.dart';
 import 'file/file.dart';
 import 'file/file2.dart';
 import 'file/filepicker.dart';
 import 'kcwc/shopcar/shopcar.dart';
 import 'kcwc/sliverDemoPage.dart';
+import 'learn/dialog.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -170,14 +170,10 @@ class _MyHomePageState extends State<MyHomePage> {
             }));
           }),
       ItemBean(
-        title: "showDialog",
-        onPress: () => _show(context),
-      ),
-      ItemBean(
         title: "justtest",
         onPress: () =>
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return justtest();
+          return MyDialog();
         })),
       ),
       ItemBean(
@@ -196,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: <Widget>[
+          A2FWidget(),
           Tooltip(
               message: "根据名称收索",
               child: IconButton(
@@ -233,132 +230,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  StreamSubscription _subscription = null;
-
-  @override
-  void initState() {
-    if (null == _subscription) {
-      _subscription = InteractNative.dealNativeWithValue()
-          .listen(_onEvent, onError: _onError);
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (_subscription != null) {
-      _subscription.cancel();
-    }
-  }
-
-  void _onEvent(Object event) {
-    Toast.show(event, context);
-    CommonUtils.log2(["_onEvent",event.toString()]);
-    if ('onConnected' == event) {
-//        DialogUtil.buildToast('已连接');
-    }
-  }
-
-  void _onError(Object error) {
-    CommonUtils.log2(["_onError",error.toString()]);
-    Toast.show(error, context);
-  }
-}
-
-_show(BuildContext context) {
-  test222();
-  showDialog(
-// 传入 context
-    context: context,
-// 构建 Dialog 的视图
-    builder: (_) => Container(
-      color: Colors.blue,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Text('Custom Dialog',
-                        style: TextStyle(
-                            fontSize: 16, decoration: TextDecoration.none)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15, bottom: 8),
-                    child: FlatButton(
-                        onPressed: () {
-// 关闭 Dialog
-                          Navigator.pop(_);
-                        },
-                        child: Text('确定')),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-class justtest extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context, shadowThemeOnly: true),
-      child: SafeArea(
-        child: Builder(builder: (BuildContext context) {
-          return Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.white,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 8),
-                        child: Text('Custom Dialog',
-                            style: TextStyle(
-                                fontSize: 16, decoration: TextDecoration.none)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 15, bottom: 8),
-                        child: FlatButton(
-                            onPressed: () {
-// 关闭 Dialog
-                              Navigator.pop(context);
-                            },
-                            child: Text('确定')),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          );
-        }),
-      ),
-    );
-  }
 }
 
 class NewRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    test();
     var args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
@@ -376,13 +252,6 @@ class NewRoute extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  test() {
-    String s = "s";
-    CommonUtils.log2(["initState", "s".hashCode, s.hashCode]);
-    s = "sdfdsf";
-    CommonUtils.log2(["initState", "sdfdsf".hashCode, s.hashCode]);
   }
 }
 
@@ -466,19 +335,5 @@ class _searchBarDelegate extends SearchDelegate<String> {
                   ])),
               onTap: suggestionList[index].onPress,
             ));
-  }
-}
-
-class InteractNative {
-  /* 通道名称，必须与原生注册的一致*/
-  static const native_to_flutter =
-      const EventChannel('com.bhm.flutter.flutternb.plugins/native_to_flutter');
-
-  /*
-  * 原生回调的方法（带参）
-  */
-  static Stream<dynamic> dealNativeWithValue() {
-    Stream<dynamic> stream = native_to_flutter.receiveBroadcastStream();
-    return stream;
   }
 }
