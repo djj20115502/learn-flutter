@@ -8,6 +8,7 @@ abstract class Test {
     "http://pic22.nipic.com/20120704/10243327_181334497194_2.jpg",
     "http://pic1.nipic.com/2009-02-10/2009210213644146_2.jpg"
   ];
+
   static getTestImage() {
     testCount++;
     return getTestPic(testCount);
@@ -38,6 +39,7 @@ abstract class Test {
     "现金折扣7折",
     "降 ¥9999.00"
   ];
+
   static String getTestName(int order) {
     return testString[order % testString.length];
   }
@@ -50,17 +52,29 @@ abstract class Test {
 
 abstract class CommonUtils {
   static log(String s) {
-    if (!Test.justTest) {
-      return;
-    }
-    print("djjtest:" + s);
+    _print(s);
   }
 
   static log2(List s) {
+    _print(s.toString());
+  }
+
+  static _print(String s) {
     if (!Test.justTest) {
       return;
     }
-    print("djjtest:" + s.toString());
+    String all = StackTrace.current.toString();
+    StringBuffer sb = new StringBuffer();
+    sb.write(" \n╔═════════════════════════════════");
+    sb.write("\n║➨➨at ");
+    sb.write(all.substring(all.indexOf("#2"), all.indexOf("#3")));
+    sb.write("║➨➨➨➨at ");
+    sb.write(all.substring(all.indexOf("#3"), all.indexOf("#4")));
+    sb.write("╟───────────────────────────────────\n");
+    sb.write("║");
+    sb.write("djjtest:" + s);
+    sb.write("\n╚═════════════════════════════════");
+    print(sb.toString());
   }
 
   static String listToString(List<String> list,
