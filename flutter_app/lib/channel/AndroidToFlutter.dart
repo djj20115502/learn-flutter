@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -48,6 +49,9 @@ class A2FState extends State<A2FWidget> {
   void _onEvent(Object event) {
     Toast.show(event, context);
     CommonUtils.log2(["_onEvent", event.toString()]);
+    String key = event.toString().substring(0, 3);
+    A2FFactory.map[key]
+        ?.call(event.toString().substring(3, event.toString().length));
   }
 
   void _onError(Object error) {
@@ -55,3 +59,16 @@ class A2FState extends State<A2FWidget> {
     Toast.show(error, context);
   }
 }
+
+class A2FFactory {
+  static HashMap<String, A2FListen> map = new HashMap();
+
+  static void addListen(String key, A2FListen a2fListen) {
+    map[key] = a2fListen;
+  }
+
+  /// [ flutter_app\android\app\src\main\java\com\example\flutter_app/AndroidToFlutterPlugins.java]
+  static const String KEY_001_CLASS_FILE = "001";
+}
+
+typedef A2FListen = void Function(Object event);

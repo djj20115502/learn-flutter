@@ -40,6 +40,8 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 }
 
 void main() {
+  A2FFactory.addListen(A2FFactory.KEY_001_CLASS_FILE,
+      (Object s) => CommonUtils.log2(["文件读取", s.toString()]));
   runApp(MyApp());
   // TestIsolate.testIsolate();
   // new Db().initDb();

@@ -43,7 +43,7 @@ public class MainActivity extends FlutterActivity {
 
     private void checkIntent() {
         if (!TextUtils.isEmpty(getIntent().getDataString())) {
-            AndroidToFlutterPlugins.getInstance().send(AndroidToFlutterPlugins.CLASS_FILE + getIntent().getDataString());
+            AndroidToFlutterPlugins.getInstance().send(AndroidToFlutterPlugins.KEY_001_CLASS_FILE + getIntent().getDataString());
         }
     }
 

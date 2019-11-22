@@ -62,6 +62,6 @@ public class AndroidToFlutterPlugins implements EventChannel.StreamHandler {
 
     //考虑到flutter解析json并不友好，使用编号+数据的方式来传递数据
     //拉起的是文件
-    public static final String CLASS_FILE = "001";
+    public static final String KEY_001_CLASS_FILE = "001";
 
 }
