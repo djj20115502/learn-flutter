@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/inheritedWidget.dart';
+import 'cattleclass/readxml.dart';
 import 'channel/AndroidToFlutter.dart';
 import 'constant.dart';
 import 'file/file.dart';
@@ -41,7 +42,10 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 
 void main() {
   A2FFactory.addListen(A2FFactory.KEY_001_CLASS_FILE,
-      (Object s) => CommonUtils.log2(["文件读取", s.toString()]));
+          (Object s) => {
+      CommonUtils.log2(["文件读取", s.toString()]),
+      ReadXmlHelper.readXml(s.toString())
+  });
   runApp(MyApp());
   // TestIsolate.testIsolate();
   // new Db().initDb();
@@ -50,9 +54,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  StatelessElement a;
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -79,17 +80,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(width: 375)..init(context);
+    ScreenUtil.instance = ScreenUtil(width: 375)
+      ..init(context);
 
     List<ItemBean> shows = [
       ItemBean(
           title: "导航到新路由",
-          onPress: () => Navigator.of(context)
-              .pushNamed(Router.R_NewRoute, arguments: "h22222i")),
+          onPress: () =>
+              Navigator.of(context)
+                  .pushNamed(Router.R_NewRoute, arguments: "h22222i")),
       ItemBean(
           title: "buttons",
-          onPress: () => Navigator.of(context)
-              .pushNamed(Router.R_Buttons, arguments: "buttons")),
+          onPress: () =>
+              Navigator.of(context)
+                  .pushNamed(Router.R_Buttons, arguments: "buttons")),
       ItemBean(
           title: "flex",
           onPress: () =>
@@ -126,11 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "FileList",
           onPress: () {
             Navigator.push(context, CustomRoute(FileList()));
-          }),
-      ItemBean(
-          title: "读取表格FileList2",
-          onPress: () {
-            Navigator.push(context, CustomRoute(FileList2()));
           }),
       ItemBean(
           title: "读数据库",
@@ -175,8 +174,8 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "justtest",
         onPress: () =>
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return MyDialog();
-        })),
+              return MyDialog();
+            })),
       ),
       ItemBean(
         title: "FilePickerDemo",
@@ -184,8 +183,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       ItemBean(
         title: "toast",
-        onPress: () => Toast.show("Toast plugin app", context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+        onPress: () =>
+            Toast.show("Toast plugin app", context,
+                duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
       ),
     ];
     return Scaffold(
@@ -218,16 +218,17 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         children: List<Widget>.generate(
           shows.length,
-          (i) => RaisedButton(
-            color: Colors.blue,
-            highlightColor: Colors.blue[700],
-            colorBrightness: Brightness.dark,
-            splashColor: Colors.grey,
-            child: Text(shows[i].title),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-            onPressed: shows[i].onPress,
-          ),
+              (i) =>
+              RaisedButton(
+                color: Colors.blue,
+                highlightColor: Colors.blue[700],
+                colorBrightness: Brightness.dark,
+                splashColor: Colors.grey,
+                child: Text(shows[i].title),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                onPressed: shows[i].onPress,
+              ),
         ),
       ),
     );
@@ -237,7 +238,10 @@ class _MyHomePageState extends State<MyHomePage> {
 class NewRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context).settings.arguments;
+    var args = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text(args),
@@ -321,7 +325,8 @@ class _searchBarDelegate extends SearchDelegate<String> {
         : itmes.where((input) => input.title.startsWith(query)).toList();
     return ListView.builder(
         itemCount: suggestionList.length,
-        itemBuilder: (context, index) => ListTile(
+        itemBuilder: (context, index) =>
+            ListTile(
               title: RichText(
                   text: TextSpan(
                       text: suggestionList[index]
@@ -330,11 +335,11 @@ class _searchBarDelegate extends SearchDelegate<String> {
                       style: TextStyle(
                           color: Colors.black, fontWeight: FontWeight.bold),
                       children: [
-                    TextSpan(
-                        text:
+                        TextSpan(
+                            text:
                             suggestionList[index].title.substring(query.length),
-                        style: TextStyle(color: Colors.grey))
-                  ])),
+                            style: TextStyle(color: Colors.grey))
+                      ])),
               onTap: suggestionList[index].onPress,
             ));
   }
