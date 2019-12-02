@@ -25,6 +25,12 @@ class Excel {
     await new Excel()._createTable("卧们", ["xxx"]);
   }
 
+
+  ///插入数据库，
+  ///[tableEnName] 表名称
+  ///[columnNames] 列名
+  ///[data] 数据 2维数组
+  ///[needToEN] 列名是否需要转英文支持
   insertData(
       String tableEnName, List<String> columnNames, List<List<String>> data,
       {bool needToEN = false}) async {

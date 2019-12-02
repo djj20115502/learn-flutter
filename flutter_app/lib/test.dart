@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/utlis/toast.dart';
+
 abstract class Test {
   static const List<String> testImage = [
     "http://www.pptok.com/wp-content/uploads/2012/08/xunguang-4.jpg",
@@ -130,5 +133,12 @@ abstract class CommonUtils {
       return s1 + div + s2;
     }
     return checkNull(s1) + checkNull(s2);
+  }
+
+  static void showToast(BuildContext context, String toast) {
+    if (toast != null) {
+      Toast.show(toast, context,
+          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    }
   }
 }

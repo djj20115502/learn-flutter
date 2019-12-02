@@ -7,6 +7,8 @@ import '../test.dart';
 import 'f2AHelper.dart';
 
 class ReadXmlHelper {
+  static const String EXTENSION_XLS = "xls";
+  static const String EXTENSION_XLSX = "xlsx";
 
   static void readXml(String file) {
     new ReadXmlHelper()._getxls(file);
@@ -14,8 +16,13 @@ class ReadXmlHelper {
 
   /// 通过文件地址读取xml文件
   /// [file] 文件地址
-
   Future<Null> _getxls(String file) async {
+    if (file == null || file.length == 0) {
+      return;
+    }
+    if (!file.endsWith(EXTENSION_XLS) && !file.endsWith(EXTENSION_XLSX)) {
+      return;
+    }
     Map<dynamic, dynamic> result;
     try {
       result = await F2AHelper.invokeMethod(F2AHelper.KEY_XLS, file);
@@ -48,6 +55,7 @@ class ReadXmlHelper {
   /// [tableName] xml表名称，一个文件能有多个表，
   /// [list] 具体的xml数据，正确的数据是一个2维数组，按行排。所以第一行默认就是没一列的名称标识
   writeToDb(String tableName, Object list) async {
+    CommonUtils.log2([tableName, list.runtimeType.toString()]);
     if ("勿动".compareTo(tableName) == 0) {
       return;
     }
