@@ -15,6 +15,7 @@ import 'bloc/bloc.dart';
 import 'bloc/inheritedWidget.dart';
 import 'cattleclass/fileExplorer.dart';
 import 'cattleclass/readxml.dart';
+import 'cattleclass/showlist.dart';
 import 'channel/AndroidToFlutter.dart';
 import 'constant.dart';
 import 'file/file.dart';
@@ -97,7 +98,16 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "导航到新路由",
           onPress: () => Navigator.of(context)
               .pushNamed(Router.R_NewRoute, arguments: "h22222i")),
-      ItemBean(title: "资源管理器", onPress: Explorer.openOne()),
+      ItemBean(
+          title: "读取数据库",
+          onPress: () {
+            Navigator.push(context, CustomRoute(ShowAllStudent()));
+          }),
+      ItemBean(
+          title: "资源管理器",
+          onPress: () {
+            Explorer.openOne();
+          }),
       ItemBean(title: "删除", onPress: delet),
       ItemBean(
           title: "buttons",
