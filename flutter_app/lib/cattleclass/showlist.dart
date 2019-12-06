@@ -17,14 +17,18 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
   @override
   void initState() {
     super.initState();
-    _getTalbe();
+    _getTable();
   }
 
-  _getTalbe() async {
-    List<String> names = await new Excel().getColumn("");
-    CommonUtils.log2(names);
-    table = await new Excel().getTableNames();
+  _getTable() async {
+    table = await Excel.getInstance().getTableNames();
     CommonUtils.log2(table);
+    for (String t in table) {
+      List<String> column = await Excel.getInstance().getColumnCh(t);
+      table = column;
+
+      CommonUtils.log2([t, column]);
+    }
     setState(() {});
   }
 
@@ -35,42 +39,52 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text("列表"),
-//        actions: <Widget>[
-//           Tooltip(
-//              message: "根据名称收索",
-//              child: IconButton(
-//                  icon: Icon(Icons.search),
-//                  onPressed: () {
-//                    showSearch(
-//                        context: context, delegate: _searchBarDelegate(shows));
-//                  }))
-//        ],
       ),
-      body: GridView(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 20,
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Container(
+            width: 900,
+            height: 500,
 
-          ///横轴间距
-          mainAxisSpacing: 20,
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                crossAxisSpacing: 20,
 
-          ///纵轴间距
-          // childAspectRatio:1 ,///宽高比
-        ),
-        children: List<Widget>.generate(
-          table.length,
-          (i) => RaisedButton(
-            color: Colors.blue,
-            highlightColor: Colors.blue[700],
-            colorBrightness: Brightness.dark,
-            splashColor: Colors.grey,
-            child: Text(table[i]),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-            onPressed: () => CommonUtils.showToast(context, table[i]),
+                ///横轴间距
+                mainAxisSpacing: 1,
+
+                ///纵轴间距
+//                 childAspectRatio:1 ,///宽高比
+              ),
+              children: List<Widget>.generate(
+                table.length,
+                _widget2,
+              ),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _widget(int i) {
+    return RaisedButton(
+      color: Colors.blue,
+      highlightColor: Colors.blue[700],
+      colorBrightness: Brightness.dark,
+      splashColor: Colors.grey,
+      child: Text(table[i]),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      onPressed: () => CommonUtils.showToast(context, table[i]),
+    );
+  }
+
+  Widget _widget2(int i) {
+    return Row(children: <Widget>[
+      Text("第" + i.toString()),
+      Text(table[i]),
+    ]);
   }
 }

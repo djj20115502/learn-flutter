@@ -4,9 +4,19 @@ import 'package:sqflite/sqflite.dart';
 import '../test.dart';
 
 class Excel {
+  static Excel sInstance;
+
+  static Excel getInstance() {
+    if (sInstance == null) {
+      sInstance = new Excel();
+    }
+    return sInstance;
+  }
+
   static const DbName = "demo.db";
   static const DbVersion = 1;
   Database database;
+
   Column columnTools = new Column();
 
   Future<Database> getDb() async {
@@ -24,7 +34,6 @@ class Excel {
     await new Excel()._createTable("卧们", ["x", "sd"]);
     await new Excel()._createTable("卧们", ["xxx"]);
   }
-
 
   ///插入数据库，
   ///[tableEnName] 表名称
@@ -116,7 +125,7 @@ class Excel {
     return rt;
   }
 
-  ///获取表名中的字段名称
+  ///获取表名中的字段名称  [tableName] 真实的名称，英文
   Future<List<String>> getColumn(String tableName) async => getDb()
           .then((m) => m.rawQuery('PRAGMA table_info($tableName) '))
           .then((m) {
@@ -127,6 +136,11 @@ class Excel {
         }
         return column;
       }).catchError((error) => null);
+
+  ///中文名
+  Future<List<String>> getColumnCh(String tableName) async {
+    return getColumn(await columnTools.getEnColumn(tableName));
+  }
 
   ///获取数据中的表名
   Future<List<String>> getTableNames() async {
