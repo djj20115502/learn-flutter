@@ -87,19 +87,20 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
           title: Text("列表"),
         ),
         body: Scrollbar(
-          child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                  //              child: ListView.builder(
+            child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Column(
+              //              child: ListView.builder(
 //                  itemCount: table.length,
 //                  itemExtent: 50.0, //强制高度为50.0
 //                  itemBuilder: (BuildContext context, int index) {
 //                    return _widget2(index);
 //                  })),
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [_widget2(1), _widget2(2)])),
-        ));
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: _widget223()),
+        )));
   }
 
   Widget _widget2(int i) {
@@ -110,6 +111,14 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
           Text("第" + i.toString()),
           Text(table[i] * 5),
         ]);
+  }
+
+  List<Widget> _widget223() {
+    List<Widget> list = new List();
+    for (int i = 0; i < table.length; i++) {
+      list.add(_widget2(i));
+    }
+    return list;
   }
 
   Widget _widget24() {
