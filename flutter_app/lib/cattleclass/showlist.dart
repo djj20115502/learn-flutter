@@ -35,15 +35,23 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
 
   ObjectKey key = new ObjectKey(1);
   ListView listView;
-  ScrollController controller2;
+  ScrollController vSscrollController;
+  ScrollController hSscrollController;
+  ScrollController hController;
+  ScrollController vController;
 
   @override
   Widget build(BuildContext context) {
-    scrollController = new ScrollController();
-    controller2 = new ScrollController();
-    scrollController.addListener(() => {
+    vSscrollController = new ScrollController();
+    vController = new ScrollController();
+    hController = new ScrollController();
+    hSscrollController = new ScrollController();
+    vSscrollController.addListener(() => {
           CommonUtils.log(key.runtimeType.toString()),
-          controller2.jumpTo(scrollController.offset)
+          vController.jumpTo(vSscrollController.offset),
+        });
+    hSscrollController.addListener(() => {
+          hController.jumpTo(hSscrollController.offset),
         });
 
     return Scaffold(
@@ -52,46 +60,66 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
         // the App.build method, and use it to set our appbar title.
         title: Text("列表"),
       ),
-      body: Row(children: <Widget>[
-        Container(
-          width: 50,
-          child: ListView.builder(
-            controller: controller2,
-            itemCount: table.length,
-            itemExtent: 50.0,
-            //强制高度为50.0
-            itemBuilder: (BuildContext context, int index) {
-              return Text(index.toString());
-            },
-          ),
-        ),
-        Expanded(
-          child: NotificationListener<ScrollNotification>(
-            onNotification: _handleScrollNotification,
-            //横向
-            child: SingleChildScrollView(
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 50,
+            child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              child: Container(
-                width: 1000,
-                child: ListView.builder(
-                  key: key,
-                  controller: scrollController,
-                  itemCount: table.length,
-                  itemExtent: 50.0,
-                  //强制高度为50.0
-                  itemBuilder: (BuildContext context, int index) {
-                    return _widget2(index);
-                  },
-                ),
-              ),
+              controller: hController,
+              itemCount: table.length,
+              itemExtent: 20.0,
+              //强制高度为50.0
+              itemBuilder: (BuildContext context, int index) {
+                return Text(index.toString());
+              },
             ),
           ),
-        ),
-      ]),
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: 50,
+                  child: ListView.builder(
+                    controller: vController,
+                    itemCount: table.length,
+                    itemExtent: 50.0,
+                    //强制高度为50.0
+                    itemBuilder: (BuildContext context, int index) {
+                      return Text(index.toString());
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: _handleScrollNotification,
+                    //横向
+                    child: SingleChildScrollView(
+                      controller: hSscrollController,
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        width: 1000,
+                        child: ListView.builder(
+                          key: key,
+                          controller: vSscrollController,
+                          itemCount: table.length,
+                          itemExtent: 50.0,
+                          //强制高度为50.0
+                          itemBuilder: (BuildContext context, int index) {
+                            return _widget2(index);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
-
-  ScrollController scrollController;
 
   bool _handleScrollNotification(ScrollNotification notification) {
 //    print(StackTrace.current.toString());
