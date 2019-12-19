@@ -35,17 +35,13 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
 
   ObjectKey key = new ObjectKey(1);
   ListView listView;
-  ScrollController vSscrollController;
-  ScrollController hSscrollController;
-  ScrollController hController;
-  ScrollController vController;
+  ScrollController vSscrollController = new ScrollController();
+  ScrollController hSscrollController = new ScrollController();
+  ScrollController hController = new ScrollController();
+  ScrollController vController = new ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    vSscrollController = new ScrollController();
-    vController = new ScrollController();
-    hController = new ScrollController();
-    hSscrollController = new ScrollController();
     vSscrollController.addListener(() => {
           CommonUtils.log(key.runtimeType.toString()),
           vController.jumpTo(vSscrollController.offset),
@@ -53,7 +49,6 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
     hSscrollController.addListener(() => {
           hController.jumpTo(hSscrollController.offset),
         });
-
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -65,6 +60,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
           Container(
             height: 50,
             child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               controller: hController,
               itemCount: table.length,
@@ -81,6 +77,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
                 Container(
                   width: 50,
                   child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     controller: vController,
                     itemCount: table.length,
                     itemExtent: 50.0,
