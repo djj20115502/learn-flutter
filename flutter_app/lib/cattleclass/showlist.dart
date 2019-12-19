@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/sqflite/column.dart' as cc;
 import 'package:flutter_app/sqflite/excel.dart';
 import 'package:flutter_app/test.dart';
 
@@ -32,128 +33,84 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
     setState(() {});
   }
 
+  ObjectKey key = new ObjectKey(1);
+  ListView listView;
+  ScrollController controller2;
+
   @override
   Widget build(BuildContext context) {
-//    return   new Scaffold(
-//      appBar: new AppBar(
-//        title: new Text("LinearLayout Example"),
-//      ),
-//      body: Scrollbar(
-//        child: SingleChildScrollView(
-//          scrollDirection: Axis.horizontal,
-//          child: Container(
-//            color: Colors.yellowAccent,
-//            child: new Row(
-//              //Column
-//              mainAxisSize: MainAxisSize.min,
-//              //wrap_content ,不加的话默认为match_parent（MainAxisSize.max）
-////              mainAxisSize: MainAxisSize.max,
-//              mainAxisAlignment: MainAxisAlignment.start,
-//              //start==left,center==center,end==right ,
-//              // spaceEvenly==等比例居中，4个间距一样大（weight=1),spaceAround=等比例居中，6个间距一样大,spaceBetween=中间居中，两边顶边
-//              children: [
-//                Container(
-//                  child: new Icon(
-//                    Icons.access_time,
-//                    size: 50.0,
-//                  ),
-//                  color: Colors.red,
-//                ),
-//                Container(
-//                  child: new Icon(
-//                    Icons.pie_chart,
-//                    size: 370.0,
-//                  ),
-//                  color: Colors.blue,
-//                ),
-//                Container(
-//                  child: new Icon(
-//                    Icons.email,
-//                    size: 50.0,
-//                  ),
-//                  color: Colors.green,
-//                ),
-//              ],
-//            ),
-//          ),
-//        ),
-//      ),
-//    ) ;
+    scrollController = new ScrollController();
+    controller2 = new ScrollController();
+    scrollController.addListener(() => {
+          CommonUtils.log(key.runtimeType.toString()),
+          controller2.jumpTo(scrollController.offset)
+        });
 
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text("列表"),
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text("列表"),
+      ),
+      body: Row(children: <Widget>[
+        Container(
+          width: 50,
+          child: ListView.builder(
+            controller: controller2,
+            itemCount: table.length,
+            itemExtent: 50.0,
+            //强制高度为50.0
+            itemBuilder: (BuildContext context, int index) {
+              return Text(index.toString());
+            },
+          ),
         ),
-        body: Scrollbar(
+        Expanded(
+          child: NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
+            //横向
             child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Column(
-              //              child: ListView.builder(
-//                  itemCount: table.length,
-//                  itemExtent: 50.0, //强制高度为50.0
-//                  itemBuilder: (BuildContext context, int index) {
-//                    return _widget2(index);
-//                  })),
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: _widget223()),
-        )));
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                width: 1000,
+                child: ListView.builder(
+                  key: key,
+                  controller: scrollController,
+                  itemCount: table.length,
+                  itemExtent: 50.0,
+                  //强制高度为50.0
+                  itemBuilder: (BuildContext context, int index) {
+                    return _widget2(index);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
   }
 
+  ScrollController scrollController;
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+//    print(StackTrace.current.toString());
+    return true;
+  }
+
+//cc.Column.getInstance().getChinese(table[i])
   Widget _widget2(int i) {
     return Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Text("第" + i.toString()),
-          Text(table[i] * 5),
-        ]);
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Text("第" + i.toString()),
+        Text(table[i] * 10),
+      ],
+    );
   }
 
-  List<Widget> _widget223() {
-    List<Widget> list = new List();
-    for (int i = 0; i < table.length; i++) {
-      list.add(_widget2(i));
-    }
-    return list;
-  }
-
-  Widget _widget24() {
-    return Container(
-        color: Colors.yellowAccent,
-        child: new Row(
-            //Column
-            mainAxisSize: MainAxisSize.min,
-            //wrap_content ,不加的话默认为match_parent（MainAxisSize.max）
-//              mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            //start==left,center==center,end==right ,
-            // spaceEvenly==等比例居中，4个间距一样大（weight=1),spaceAround=等比例居中，6个间距一样大,spaceBetween=中间居中，两边顶边
-            children: [
-              Container(
-                child: new Icon(
-                  Icons.access_time,
-                  size: 50.0,
-                ),
-                color: Colors.red,
-              ),
-              Container(
-                child: new Icon(
-                  Icons.pie_chart,
-                  size: 370.0,
-                ),
-                color: Colors.blue,
-              ),
-              Container(
-                child: new Icon(
-                  Icons.email,
-                  size: 50.0,
-                ),
-                color: Colors.green,
-              ),
-            ]));
+  Future<String> getName(String name) async {
+    String rt = await cc.Column.getInstance().getChinese(name);
   }
 }
