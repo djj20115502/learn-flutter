@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/sqflite/column.dart' as cc;
@@ -13,6 +15,7 @@ class ShowAllStudent extends StatefulWidget {
 }
 
 class _ShowAllStudentState extends State<ShowAllStudent> {
+  //英文，中文的列名存储
   Map<String, String> columnNameE2C = new Map();
 
   @override
@@ -34,15 +37,46 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
       }
       columnNameE2C[v] = chineseName;
     }
+    CommonUtils.log2(["columnNameE2C", columnNameE2C]);
+
     allData = await Excel.getInstance().getAllData(allTable[0]);
     CommonUtils.log2(["allData", allData.elementAt(0)]);
+    await _getSize();
     setState(() {});
   }
 
+  ///列名对应需要的宽度
+  Map<String, double> columnWidth = new Map();
+  double allWidth = 0;
+
+  _getSize() async {
+    for (var v in allData) {
+      for (var key in v.keys) {
+        //HASH和create_time不放里面
+        if (columnNameE2C[key] == null) {
+          continue;
+        }
+        if (columnWidth[key] == null) {
+          columnWidth[key] = 0;
+        }
+
+        columnWidth[key] =
+            columnWidth[key] + (v[key].toString().length / allData.length);
+      }
+    }
+    CommonUtils.log2(["columnWidth1", columnWidth]);
+    for (var w in columnWidth.keys) {
+      columnWidth[w] = max(columnWidth[w] * 10.0,
+          columnNameE2C[w] == null ? 0 : columnNameE2C[w].length * 20.0);
+      allWidth += columnWidth[w];
+    }
+    CommonUtils.log2(["columnWidth2", columnWidth]);
+  }
+
+  ///全部的数据
   List<Map<String, dynamic>> allData = [];
 
   ObjectKey key = new ObjectKey(1);
-  ListView listView;
   ScrollController vSscrollController = new ScrollController();
   ScrollController hSscrollController = new ScrollController();
   ScrollController hController = new ScrollController();
@@ -54,6 +88,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
           CommonUtils.log(key.runtimeType.toString()),
           vController.jumpTo(vSscrollController.offset),
         });
+
     hSscrollController.addListener(() => {
           hController.jumpTo(hSscrollController.offset),
         });
@@ -75,7 +110,8 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
               itemCount: columnNameE2C.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  width: 90,
+                  alignment: Alignment.center,
+                  width: columnWidth[columnNameE2C.keys.elementAt(index)],
                   child: Text(columnNameE2C.values.elementAt(index)),
                 );
               },
@@ -110,7 +146,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
                       controller: hSscrollController,
                       scrollDirection: Axis.horizontal,
                       child: Container(
-                        width: 1000,
+                        width: allWidth,
                         child: ListView.builder(
                           key: key,
                           controller: vSscrollController,
@@ -140,20 +176,20 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
 
 //cc.Column.getInstance().getChinese(table[i])
   Widget _widget2(int index) {
+    List<Widget> children = [];
+    for (var key in columnNameE2C.keys) {
+      children.add(
+        Container(
+          alignment: Alignment.center,
+          width: columnWidth[key],
+          child: Text(allData[index][key].toString()),
+        ),
+      );
+    }
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Text(allData[index][columnNameE2C.keys.elementAt(0)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(1)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(2)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(3)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(4)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(5)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(6)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(7)].toString()),
-        Text(allData[index][columnNameE2C.keys.elementAt(8)].toString()),
-      ],
+      children: children,
     );
   }
 }
