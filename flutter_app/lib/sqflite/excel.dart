@@ -164,4 +164,19 @@ class Excel {
   }
 
   close() => database?.close();
+
+  /// 获得表需要新加入的字段名称
+  Future<List<Map<String, dynamic>>> getAllData(String theEnTableName) async =>
+      columnTools
+          .getEnColumn(theEnTableName)
+          .then((s) => getData("select * from $s"));
+
+  Future<List<Map<String, dynamic>>> getData(String order) async {
+    try {
+      return getDb().then((db) => db.rawQuery("$order"));
+    } catch (e) {
+      CommonUtils.log(e.toString());
+      return null;
+    }
+  }
 }

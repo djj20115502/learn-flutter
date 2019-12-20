@@ -13,7 +13,7 @@ class ShowAllStudent extends StatefulWidget {
 }
 
 class _ShowAllStudentState extends State<ShowAllStudent> {
-  List<String> table = [];
+  Map<String, String> columnNameE2C = new Map();
 
   @override
   void initState() {
@@ -22,16 +22,24 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
   }
 
   _getTable() async {
-    table = await Excel.getInstance().getTableNames();
-    CommonUtils.log2(table);
-    for (String t in table) {
-      List<String> column = await Excel.getInstance().getColumnCh(t);
-      table = column;
-
-      CommonUtils.log2([t, column]);
+    List<String> allTable = await Excel.getInstance().getTableNames();
+    allTable = await Excel.getInstance().getTableNames();
+    CommonUtils.log2(["全部的table", allTable]);
+    List<String> column = await Excel.getInstance().getColumnCh(allTable[0]);
+    CommonUtils.log2(["第一个", allTable[0], column]);
+    for (String v in column) {
+      String chineseName = await cc.Column.getInstance().getChinese(v);
+      if (chineseName == null) {
+        continue;
+      }
+      columnNameE2C[v] = chineseName;
     }
+    allData = await Excel.getInstance().getAllData(allTable[0]);
+    CommonUtils.log2(["allData", allData.elementAt(0)]);
     setState(() {});
   }
+
+  List<Map<String, dynamic>> allData = [];
 
   ObjectKey key = new ObjectKey(1);
   ListView listView;
@@ -57,29 +65,34 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
       ),
       body: Column(
         children: <Widget>[
+          ///顶部的列名显示
           Container(
             height: 50,
             child: ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               controller: hController,
-              itemCount: table.length,
-              itemExtent: 20.0,
-              //强制高度为50.0
+              itemCount: columnNameE2C.length,
               itemBuilder: (BuildContext context, int index) {
-                return Text(index.toString());
+                return Container(
+                  width: 90,
+                  child: Text(columnNameE2C.values.elementAt(index)),
+                );
               },
             ),
           ),
+
+          ///底部内容区域
           Expanded(
             child: Row(
               children: <Widget>[
+                ///左边的序号区域
                 Container(
                   width: 50,
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     controller: vController,
-                    itemCount: table.length,
+                    itemCount: allData.length,
                     itemExtent: 50.0,
                     //强制高度为50.0
                     itemBuilder: (BuildContext context, int index) {
@@ -87,6 +100,8 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
                     },
                   ),
                 ),
+
+                ///右边的可滑动的内容区域
                 Expanded(
                   child: NotificationListener<ScrollNotification>(
                     onNotification: _handleScrollNotification,
@@ -99,7 +114,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
                         child: ListView.builder(
                           key: key,
                           controller: vSscrollController,
-                          itemCount: table.length,
+                          itemCount: allData.length,
                           itemExtent: 50.0,
                           //强制高度为50.0
                           itemBuilder: (BuildContext context, int index) {
@@ -124,18 +139,21 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
   }
 
 //cc.Column.getInstance().getChinese(table[i])
-  Widget _widget2(int i) {
+  Widget _widget2(int index) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text("第" + i.toString()),
-        Text(table[i] * 10),
+        Text(allData[index][columnNameE2C.keys.elementAt(0)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(1)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(2)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(3)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(4)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(5)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(6)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(7)].toString()),
+        Text(allData[index][columnNameE2C.keys.elementAt(8)].toString()),
       ],
     );
-  }
-
-  Future<String> getName(String name) async {
-    String rt = await cc.Column.getInstance().getChinese(name);
   }
 }
