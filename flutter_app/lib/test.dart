@@ -80,6 +80,16 @@ abstract class CommonUtils {
     print(sb.toString());
   }
 
+  static int testCount=0;
+  static Color getTestColor(){
+    testCount++;
+    switch(testCount%2){
+      case 0:
+        return Color(0x33FFFF00);
+      case 1:
+        return Color(0x3300FFFF);
+    }
+  }
   static String listToString(List<String> list,
       {String div = ",", String coverL = "", String coverR = ""}) {
     if (list == null || list.length == 0) {

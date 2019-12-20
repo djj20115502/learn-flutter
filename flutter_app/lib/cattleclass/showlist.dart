@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_app/sqflite/column.dart' as cc;
 import 'package:flutter_app/sqflite/excel.dart';
 import 'package:flutter_app/test.dart';
@@ -70,6 +71,12 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
           columnNameE2C[w] == null ? 0 : columnNameE2C[w].length * 20.0);
       allWidth += columnWidth[w];
     }
+//   Text t =Text("a");
+//    RichText richText =t.build(context);
+//    RenderParagraph renderParagraph= richText.createRenderObject(context);
+//    renderParagraph.layout(BoxConstraints.expand());
+//     CommonUtils.log2(["w", richText.runtimeType,renderParagraph.size]);
+
     CommonUtils.log2(["columnWidth2", columnWidth]);
   }
 
@@ -85,13 +92,14 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
   @override
   Widget build(BuildContext context) {
     vSscrollController.addListener(() => {
-          CommonUtils.log(key.runtimeType.toString()),
           vController.jumpTo(vSscrollController.offset),
         });
 
     hSscrollController.addListener(() => {
           hController.jumpTo(hSscrollController.offset),
         });
+
+    double leftLineWidth = 50;
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -103,6 +111,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
           ///顶部的列名显示
           Container(
             height: 50,
+            padding: EdgeInsetsDirectional.only(start: leftLineWidth),
             child: ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
@@ -110,6 +119,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
               itemCount: columnNameE2C.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
+                  color: CommonUtils.getTestColor(),
                   alignment: Alignment.center,
                   width: columnWidth[columnNameE2C.keys.elementAt(index)],
                   child: Text(columnNameE2C.values.elementAt(index)),
@@ -124,7 +134,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
               children: <Widget>[
                 ///左边的序号区域
                 Container(
-                  width: 50,
+                  width: leftLineWidth,
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     controller: vController,
@@ -180,6 +190,7 @@ class _ShowAllStudentState extends State<ShowAllStudent> {
     for (var key in columnNameE2C.keys) {
       children.add(
         Container(
+          color: CommonUtils.getTestColor(),
           alignment: Alignment.center,
           width: columnWidth[key],
           child: Text(allData[index][key].toString()),
