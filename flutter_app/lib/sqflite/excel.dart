@@ -4,9 +4,19 @@ import 'package:sqflite/sqflite.dart';
 import '../test.dart';
 
 class Excel {
+  static Excel sInstance;
+
+  static Excel getInstance() {
+    if (sInstance == null) {
+      sInstance = new Excel();
+    }
+    return sInstance;
+  }
+
   static const DbName = "demo.db";
   static const DbVersion = 1;
   Database database;
+
   Column columnTools = new Column();
 
   Future<Database> getDb() async {
@@ -25,6 +35,11 @@ class Excel {
     await new Excel()._createTable("卧们", ["xxx"]);
   }
 
+  ///插入数据库，
+  ///[tableEnName] 表名称
+  ///[columnNames] 列名
+  ///[data] 数据 2维数组
+  ///[needToEN] 列名是否需要转英文支持
   insertData(
       String tableEnName, List<String> columnNames, List<List<String>> data,
       {bool needToEN = false}) async {
@@ -110,7 +125,7 @@ class Excel {
     return rt;
   }
 
-  ///获取表名中的字段名称
+  ///获取表名中的字段名称  [tableName] 真实的名称，英文
   Future<List<String>> getColumn(String tableName) async => getDb()
           .then((m) => m.rawQuery('PRAGMA table_info($tableName) '))
           .then((m) {
@@ -121,6 +136,11 @@ class Excel {
         }
         return column;
       }).catchError((error) => null);
+
+  ///中文名
+  Future<List<String>> getColumnCh(String tableName) async {
+    return getColumn(await columnTools.getEnColumn(tableName));
+  }
 
   ///获取数据中的表名
   Future<List<String>> getTableNames() async {
@@ -140,15 +160,23 @@ class Excel {
       }
       rt.add(await columnTools.getChinese(name));
     }
-    if (Test.justTest) {
-      rt.add(rt[0]);
-      rt.add(rt[0]);
-      rt.add(rt[0]);
-      rt.add(rt[0]);
-      rt.add(rt[0]);
-    }
     return rt;
   }
 
   close() => database?.close();
+
+  /// 获得表需要新加入的字段名称
+  Future<List<Map<String, dynamic>>> getAllData(String theEnTableName) async =>
+      columnTools
+          .getEnColumn(theEnTableName)
+          .then((s) => getData("select * from $s"));
+
+  Future<List<Map<String, dynamic>>> getData(String order) async {
+    try {
+      return getDb().then((db) => db.rawQuery("$order"));
+    } catch (e) {
+      CommonUtils.log(e.toString());
+      return null;
+    }
+  }
 }

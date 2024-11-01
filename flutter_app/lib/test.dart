@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/utlis/toast.dart';
+
 abstract class Test {
   static const List<String> testImage = [
     "http://www.pptok.com/wp-content/uploads/2012/08/xunguang-4.jpg",
@@ -8,6 +11,7 @@ abstract class Test {
     "http://pic22.nipic.com/20120704/10243327_181334497194_2.jpg",
     "http://pic1.nipic.com/2009-02-10/2009210213644146_2.jpg"
   ];
+
   static getTestImage() {
     testCount++;
     return getTestPic(testCount);
@@ -38,6 +42,7 @@ abstract class Test {
     "现金折扣7折",
     "降 ¥9999.00"
   ];
+
   static String getTestName(int order) {
     return testString[order % testString.length];
   }
@@ -50,19 +55,41 @@ abstract class Test {
 
 abstract class CommonUtils {
   static log(String s) {
-    if (!Test.justTest) {
-      return;
-    }
-    print("djjtest:" + s);
+    _print(s);
   }
 
   static log2(List s) {
+    _print(s.toString());
+  }
+
+  static _print(String s) {
     if (!Test.justTest) {
       return;
     }
-    print("djjtest:" + s.toString());
+    String all = StackTrace.current.toString();
+    StringBuffer sb = new StringBuffer();
+    sb.write(" \n╔═════════════════════════════════");
+    sb.write("\n║➨➨at ");
+    sb.write(all.substring(all.indexOf("#2"), all.indexOf("#3")));
+    sb.write("║➨➨➨➨at ");
+    sb.write(all.substring(all.indexOf("#3"), all.indexOf("#4")));
+    sb.write("╟───────────────────────────────────\n");
+    sb.write("║");
+    sb.write("djjtest:" + s);
+    sb.write("\n╚═════════════════════════════════");
+    print(sb.toString());
   }
 
+  static int testCount=0;
+  static Color getTestColor(){
+    testCount++;
+    switch(testCount%2){
+      case 0:
+        return Color(0x33FFFF00);
+      case 1:
+        return Color(0x3300FFFF);
+    }
+  }
   static String listToString(List<String> list,
       {String div = ",", String coverL = "", String coverR = ""}) {
     if (list == null || list.length == 0) {
@@ -116,5 +143,12 @@ abstract class CommonUtils {
       return s1 + div + s2;
     }
     return checkNull(s1) + checkNull(s2);
+  }
+
+  static void showToast(BuildContext context, String toast) {
+    if (toast != null) {
+      Toast.show(toast, context,
+          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    }
   }
 }

@@ -1,7 +1,10 @@
 package com.example.flutter_app.invoke;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.example.flutter_app.CommonUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +21,21 @@ import jxl.read.biff.BiffException;
 
 public class ReadXml implements Iivoke {
 
+
     @Override
     public Ans getAns(Context context, MethodCall call) {
-        return new Ans(analyzeXls(context.getFilesDir().getParent() + "/app_flutter/right.x1s"));
+//        return new Ans(analyzeXls(context.getFilesDir().getParent() + "/app_flutter/right.x1s"));
+        CommonUtils.log(call.arguments);
+        String file = call.arguments.toString();
+        if (TextUtils.isEmpty(file)) {
+            return Ans.error("file is null");
+        }
+        String head = "file://";
+        if (file.startsWith(head)) {
+            file = file.substring(head.length());
+        }
+        CommonUtils.log(file);
+        return new Ans(analyzeXls(file));
     }
 
 

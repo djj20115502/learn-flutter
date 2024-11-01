@@ -6,6 +6,17 @@ import '../test.dart';
 /// 中文列名与拼音对应
 /// key 拼音 value 汉字
 class Column {
+
+  static Column sInstance;
+
+  static Column getInstance() {
+    if (sInstance == null) {
+      sInstance = new Column();
+    }
+    return sInstance;
+  }
+
+
   ///通过中文得到唯一的拼音，同音字其后加数字
   Future<String> getEnColumn(String chinese) async {
 

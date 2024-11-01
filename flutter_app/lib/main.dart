@@ -1,5 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/file/read.dart';
 import 'package:flutter_app/net/test.dart';
 import 'package:flutter_app/step2/custome_router.dart';
@@ -12,12 +13,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bloc/bloc.dart';
 import 'bloc/inheritedWidget.dart';
+import 'cattleclass/fileExplorer.dart';
+import 'cattleclass/readxml.dart';
+import 'cattleclass/showlist.dart';
+import 'channel/AndroidToFlutter.dart';
 import 'constant.dart';
 import 'file/file.dart';
-import 'file/file2.dart';
 import 'file/filepicker.dart';
 import 'kcwc/shopcar/shopcar.dart';
 import 'kcwc/sliverDemoPage.dart';
+import 'learn/dialog.dart';
 import 'step2/gesturedetector.dart';
 
 void collectLog(String line) {
@@ -37,6 +42,12 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 }
 
 void main() {
+  A2FFactory.addListen(
+      A2FFactory.KEY_001_CLASS_FILE,
+      (Object s) => {
+            CommonUtils.log2(["文件读取", s.toString()]),
+            ReadXmlHelper.readXml(s.toString())
+          });
   runApp(MyApp());
   // TestIsolate.testIsolate();
   // new Db().initDb();
@@ -45,9 +56,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  StatelessElement a;
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -72,6 +80,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  delet() async {
+    String aaa = await Explorer.delete();
+    if (aaa == null) {
+      CommonUtils.showToast(context, "删除成功");
+    } else {
+      CommonUtils.showToast(context, aaa);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil(width: 375)..init(context);
@@ -81,6 +98,17 @@ class _MyHomePageState extends State<MyHomePage> {
           title: "导航到新路由",
           onPress: () => Navigator.of(context)
               .pushNamed(Router.R_NewRoute, arguments: "h22222i")),
+      ItemBean(
+          title: "读取数据库",
+          onPress: () {
+            Navigator.push(context, CustomRoute(ShowAllStudent()));
+          }),
+      ItemBean(
+          title: "资源管理器",
+          onPress: () {
+            Explorer.openOne();
+          }),
+      ItemBean(title: "删除", onPress: delet),
       ItemBean(
           title: "buttons",
           onPress: () => Navigator.of(context)
@@ -123,11 +151,6 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator.push(context, CustomRoute(FileList()));
           }),
       ItemBean(
-          title: "读取表格FileList2",
-          onPress: () {
-            Navigator.push(context, CustomRoute(FileList2()));
-          }),
-      ItemBean(
           title: "读数据库",
           message: "读取所有的数据库",
           onPress: () {
@@ -167,28 +190,21 @@ class _MyHomePageState extends State<MyHomePage> {
             }));
           }),
       ItemBean(
-        title: "showDialog",
-        onPress: () => _show(context),
-      ),
-      ItemBean(
         title: "justtest",
         onPress: () =>
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return justtest();
-            })),
+          return MyDialog();
+        })),
       ),
       ItemBean(
         title: "FilePickerDemo",
-        onPress: () =>
-            Navigator.push(context, CustomRoute(FilePickerDemo())),
+        onPress: () => Navigator.push(context, CustomRoute(FilePickerDemo())),
       ),
-
-    ItemBean(
-    title: "toast",
-    onPress: () =>
-        Toast.show("Toast plugin app", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM),
-    ),
-
+      ItemBean(
+        title: "toast",
+        onPress: () => Toast.show("Toast plugin app", context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM),
+      ),
     ];
     return Scaffold(
       appBar: AppBar(
@@ -196,6 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: <Widget>[
+          A2FWidget(),
           Tooltip(
               message: "根据名称收索",
               child: IconButton(
@@ -235,100 +252,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-_show(BuildContext context) {
-  test222();
-  showDialog(
-// 传入 context
-    context: context,
-// 构建 Dialog 的视图
-    builder: (_) => Container(
-      color: Colors.blue,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: Text('Custom Dialog',
-                        style: TextStyle(
-                            fontSize: 16, decoration: TextDecoration.none)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15, bottom: 8),
-                    child: FlatButton(
-                        onPressed: () {
-// 关闭 Dialog
-                          Navigator.pop(_);
-                        },
-                        child: Text('确定')),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-class justtest extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-
-    return Theme(
-      data: Theme.of(context, shadowThemeOnly: true),
-      child: SafeArea(
-        child: Builder(builder: (BuildContext context) {
-          return Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.center,
-                  color: Colors.white,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 8),
-                        child: Text('Custom Dialog',
-                            style: TextStyle(
-                                fontSize: 16, decoration: TextDecoration.none)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 15, bottom: 8),
-                        child: FlatButton(
-                            onPressed: () {
-// 关闭 Dialog
-                              Navigator.pop(context);
-                            },
-                            child: Text('确定')),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
-
 class NewRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    test();
     var args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
@@ -346,13 +272,6 @@ class NewRoute extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  test() {
-    String s = "s";
-    CommonUtils.log2(["initState", "s".hashCode, s.hashCode]);
-    s = "sdfdsf";
-    CommonUtils.log2(["initState", "sdfdsf".hashCode, s.hashCode]);
   }
 }
 
